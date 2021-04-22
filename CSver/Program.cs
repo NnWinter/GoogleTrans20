@@ -48,6 +48,7 @@ namespace GoogleTrans20CS
                     {
                         //输入文本
                         Console.WriteLine("输入要翻译的文本，输入q结束");
+                        Console.WriteLine("");
                         Console.WriteLine("=====文本区=====");
                         StringBuilder sb = new StringBuilder();
                         string line = "";
@@ -65,9 +66,11 @@ namespace GoogleTrans20CS
                             from = rlan;
                             trans_his.Add(from);
                         }
+                        Console.WriteLine("");
                         Console.Write("=====使用语言=====" + Environment.NewLine + "源语言->"); foreach (string l in trans_his) { Console.Write(l + "->"); }; Console.WriteLine("目标语言" + Environment.NewLine + "=====使用语言=====");
                         //最终转换为
                         text = TranslateText(text, from, to);
+                        Console.WriteLine("");
                         Console.WriteLine("=====翻译后=====" + Environment.NewLine + text + Environment.NewLine + "=====翻译后=====");
                     }
                     //固定翻译
@@ -85,6 +88,7 @@ namespace GoogleTrans20CS
                             string[] clans = Console.ReadLine().Split(' ');
                             //输入文本
                             Console.WriteLine("输入要翻译的文本，输入q结束");
+                            Console.WriteLine("");
                             Console.WriteLine("=====文本区=====");
                             StringBuilder sb = new StringBuilder();
                             string line = "";
@@ -102,9 +106,11 @@ namespace GoogleTrans20CS
                                 from = clan;
                                 trans_his.Add(from);
                             }
+                            Console.WriteLine("");
                             Console.Write("=====使用语言=====" + Environment.NewLine + "源语言->"); foreach (string l in trans_his) { Console.Write(l + "->"); }; Console.WriteLine("目标语言" + Environment.NewLine + "=====使用语言=====");
                             //最终转换为
                             text = TranslateText(text, from, to);
+                            Console.WriteLine("");
                             Console.WriteLine("=====翻译后=====" + Environment.NewLine + text + Environment.NewLine + "=====翻译后=====");
                         }
                         catch
@@ -136,6 +142,7 @@ namespace GoogleTrans20CS
             {
                 Console.WriteLine("未知的命令，请输入正确的指令。[1] 未找到有效指令");
             }
+            Console.WriteLine("");
             Console.WriteLine("按回车或关闭窗口退出程序");
             Console.ReadLine();
         }
@@ -149,13 +156,12 @@ namespace GoogleTrans20CS
                 string result = httpClient.GetStringAsync(url).Result;
                 var jsonData = new JavaScriptSerializer().Deserialize<List<dynamic>>(result);
                 var translationItems = jsonData[0];
-
                 foreach (object item in translationItems)
                 {
                     IEnumerable translationLineObject = item as IEnumerable;
                     IEnumerator translationLineString = translationLineObject.GetEnumerator();
                     translationLineString.MoveNext();
-                    translation += string.Format(" {0}", Convert.ToString(translationLineString.Current));
+                    translation += string.Format("{0}", Convert.ToString(translationLineString.Current));
                 }
                 if (translation.Length > 1) { translation = translation.Substring(1); };
             }
