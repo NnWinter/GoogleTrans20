@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>_2021_04_23_04_37_33_GoogleTrans20</RootNamespace>
+  </PropertyGroup>
+
+</Project>
