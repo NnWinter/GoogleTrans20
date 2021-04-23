@@ -165,7 +165,7 @@ namespace GoogleTrans20CS
                 }
                 if (translation.Length > 1) { translation = translation.Substring(1); };
             }
-            catch { Console.WriteLine("GoogleAPI翻译失败。[4] 源语言：{0:G} 目标语言：{0:G}", from, to); }
+            catch { Console.WriteLine("GoogleAPI翻译失败。[4] 源语言：{0:G} 目标语言：{1:G}", from, to); }
 
             return translation;
         }
