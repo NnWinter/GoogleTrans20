@@ -156,12 +156,14 @@ namespace GoogleTrans20CS
                 string result = httpClient.GetStringAsync(url).Result;
                 var jsonData = new JavaScriptSerializer().Deserialize<List<dynamic>>(result);
                 var translationItems = jsonData[0];
+                int count = 0;
                 foreach (object item in translationItems)
                 {
                     IEnumerable translationLineObject = item as IEnumerable;
                     IEnumerator translationLineString = translationLineObject.GetEnumerator();
                     translationLineString.MoveNext();
-                    translation += string.Format("{0}", Convert.ToString(translationLineString.Current));
+                    translation += string.Format(count==0?" {0}":"{0}", Convert.ToString(translationLineString.Current));
+                    count++;
                 }
                 if (translation.Length > 1) { translation = translation.Substring(1); };
             }
