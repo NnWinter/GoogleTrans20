@@ -2,9 +2,6 @@
 
 GlobalOptions.Load();
 
+Test.TestAPIs();
 
-API api = new YoudaoAPI();
-
-var str = api.Translate("ZH_CN", "en", "你好");
-
-Console.WriteLine(str);
+Console.WriteLine();
