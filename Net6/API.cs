@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Nodes;
 
 namespace Net6
 {
@@ -31,7 +28,7 @@ namespace Net6
         public abstract string? Translate(string fromLanguage, string toLanguage, string text);
     }
     /// <summary>
-    /// 某 Google API
+    /// Google API
     /// </summary>
     public class GoogleTransAPI : API
     {
@@ -40,8 +37,8 @@ namespace Net6
         public override List<Language>? Languages { get; set; }
         public GoogleTransAPI()
         {
-            Languages = Language.ReadLanguagesFromFile(new FileInfo(@"APIs\GoogleApi\Languages.txt"));
-            if(Languages == null)
+            Languages = Language.ReadLanguagesFromFile(new FileInfo(@$"APIs\{Name}\Languages.txt"));
+            if (Languages == null)
             {
                 Tools.ShowError($"加载 {Name} 的语言列表时发生了 \"语言列表为 null\" 的致命错误[2301290255]", true);
             }
@@ -53,31 +50,103 @@ namespace Net6
             {
                 string uri = string.Format(ApiUri, fromLanguage, toLanguage, Uri.EscapeDataString(text));
 
-                /* 部分内容为旧版代码，虽然做了部分修改，但还可以进一步优化 */
-
+                // 使用 API 读取翻译结果
                 HttpClient httpClient = new HttpClient();
                 string result = httpClient.GetStringAsync(uri).Result;
-                var jsonData = JsonSerializer.Deserialize<List<object>>(result);
 
-                /* 这里可以加个异常处理，但是，咕咕咕 */
-                if (!jsonData[0].GetType().Equals(typeof(JsonElement)))
+                ///* 这里可以加个异常处理，但是，咕咕咕 */
+                //if (!jsonData[0].GetType().Equals(typeof(JsonElement)))
+                //{
+                //    string eMsg = string.Format("GoogleAPI 翻译失败。[4.1] 源语言：{0:G} 目标语言：{1:G}\n{2}\n", fromLanguage, toLanguage,
+                //        "API 返回的结果不是有效的 JsonElement");
+                //    Tools.ShowError(eMsg, false);
+                //    return null;
+                //}
+                //if (((JsonElement)jsonData[0]).ValueKind != JsonValueKind.Array)
+                //{
+                //    string eMsg = string.Format("GoogleAPI 翻译失败。[4.2] 源语言：{0:G} 目标语言：{1:G}\n{2}\n", fromLanguage, toLanguage,
+                //        "JsonElement 不是 Array 类型");
+                //    Tools.ShowError(eMsg, false);
+                //    return null;
+                //}
+
+                //var transItem = ((JsonElement)jsonData[0])[0][1];
+
+                //return transItem.ToString();
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                string eMsg = string.Format("GoogleAPI 翻译失败。[4.3] 源语言：{0:G} 目标语言：{1:G}\n{2}\n", fromLanguage, toLanguage, ex.Message);
+                Tools.ShowError(eMsg, false);
+                return null;
+            }
+        }
+    }
+    /// <summary>
+    /// 有道 API
+    /// </summary>
+    public class YoudaoAPI : API
+    {
+        public override string Name { get; init; } = "YoudaoApi";
+        public override string ApiUri { get; init; } = "http://fanyi.youdao.com/translate?&doctype=json&type={0}2{1}&i={2}";
+        public override List<Language>? Languages { get; set; }
+        public YoudaoAPI()
+        {
+            Languages = Language.ReadLanguagesFromFile(new FileInfo(@$"APIs\{Name}\Languages.txt"));
+            if (Languages == null)
+            {
+                Tools.ShowError($"加载 {Name} 的语言列表时发生了 \"语言列表为 null\" 的致命错误[2301290255]", true);
+            }
+        }
+        public override string? Translate(string fromLanguage, string toLanguage, string text)
+        {
+            try
+            {
+                string uri = string.Format(ApiUri, fromLanguage, toLanguage, Uri.EscapeDataString(text));
+
+                // 使用 API 读取翻译结果
+                HttpClient httpClient = new HttpClient();
+                string result = httpClient.GetStringAsync(uri).Result;
+
+                // 检查 API 的返回值
+                if(string.IsNullOrWhiteSpace(result))
                 {
-                    string eMsg = string.Format("GoogleAPI 翻译失败。[4.1] 源语言：{0:G} 目标语言：{1:G}\n{2}\n", fromLanguage, toLanguage,
-                        "API 返回的结果不是有效的 JsonElement");
+                    string eMsg =
+                        $"Youdao 翻译失败。[2301291159] 源语言：{fromLanguage} 目标语言：{toLanguage}\n" +
+                        $"API 传回了空 数据，应确认是否能正常访问该网站，如 VPN 代理问题，网络连接等\n若问题依旧存在请向作者反馈\n";
                     Tools.ShowError(eMsg, false);
                     return null;
                 }
-                if(((JsonElement)jsonData[0]).ValueKind != JsonValueKind.Array)
+
+                // 用于解析 有道的 Json 的函数
+                Func<string, string?> ReadYoudaoJson = (json) =>
                 {
-                    string eMsg = string.Format("GoogleAPI 翻译失败。[4.2] 源语言：{0:G} 目标语言：{1:G}\n{2}\n", fromLanguage, toLanguage,
-                        "JsonElement 不是 Array 类型");
+                    try
+                    {
+                        var jsonData = (JObject?)JsonConvert.DeserializeObject(json);
+
+#pragma warning disable CS8602, CS8604 // ↓↓↓ 这里可能会有 null，抛异常就行了，不用管警告
+                        return jsonData["translateResult"].ToArray()[0][0]["tgt"].ToString();
+#pragma warning restore CS8602, CS8604 // ↑↑↑
+
+                    }
+                    catch { return null; }
+                };
+                var trans = ReadYoudaoJson(result);
+
+                // 检查翻译结果
+                if(trans == null)
+                {
+                    string eMsg = 
+                        $"Youdao 翻译失败。[2301291155] 源语言：{fromLanguage} 目标语言：{toLanguage}\n" +
+                        $"无法解析 API 传回的 JSON 数据 (遇到这个问题请向作者反馈)\n";
                     Tools.ShowError(eMsg, false);
                     return null;
                 }
 
-                var transItem = ((JsonElement)jsonData[0])[0][1];
-
-                return transItem.ToString();
+                return trans;
             }
             catch (Exception ex)
             {
@@ -127,18 +196,18 @@ namespace Net6
                     if (line.StartsWith("//")) { continue; } // 忽略注释行
                     try
                     {
-                        if (!line.Contains(',')){ languages.Add(new Language(line, null)); }
+                        if (!line.Contains(',')) { languages.Add(new Language(line, null)); }
                         else
                         {
                             var index = line.IndexOf(',');
-                            var shortName = line.Substring(0, index);
-                            var fullName = line.Substring(index+1);
-                            languages.Add (new Language(shortName, fullName));
+                            var shortName = line.Substring(0, index).Trim();
+                            var fullName = line.Substring(index + 1).Trim();
+                            languages.Add(new Language(shortName, fullName));
                         }
                     }
-                    catch 
-                    { 
-                        continue; 
+                    catch
+                    {
+                        continue;
                     }
                 }
                 return languages;

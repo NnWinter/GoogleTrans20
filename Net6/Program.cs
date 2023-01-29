@@ -1,7 +1,10 @@
 ﻿using Net6;
 
-API api = new GoogleTransAPI();
+GlobalOptions.Load();
 
-var str = api.Translate("zh", "en", "你好");
+
+API api = new YoudaoAPI();
+
+var str = api.Translate("ZH_CN", "en", "你好");
 
 Console.WriteLine(str);

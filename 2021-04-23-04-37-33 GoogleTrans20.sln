@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleTrans20_CS", "CSver\G
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net6", "Net6\Net6.csproj", "{5A200C1E-5EE2-48B7-85CF-027A0F2E7941}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{DA19723E-B0D6-45B7-8CF0-9A01702FBF16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{5A200C1E-5EE2-48B7-85CF-027A0F2E7941}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A200C1E-5EE2-48B7-85CF-027A0F2E7941}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A200C1E-5EE2-48B7-85CF-027A0F2E7941}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA19723E-B0D6-45B7-8CF0-9A01702FBF16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA19723E-B0D6-45B7-8CF0-9A01702FBF16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA19723E-B0D6-45B7-8CF0-9A01702FBF16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA19723E-B0D6-45B7-8CF0-9A01702FBF16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
