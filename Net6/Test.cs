@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Net6.APIs.GoogleApi;
+using Net6.APIs.YoudaoApi;
 
 namespace Net6
 {

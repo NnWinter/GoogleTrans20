@@ -22,7 +22,7 @@ en, 英文
 eo
 et
 fi
-fr
+fr, 法语
 fy
 gl
 ka
@@ -41,7 +41,7 @@ ig
 id
 ga
 it
-ja
+ja, 日文
 jv
 kn
 kk

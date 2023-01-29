@@ -37,8 +37,8 @@ namespace Net6
 
         public const ConsoleColor DEFAULT_FG = ConsoleColor.White;
         public const ConsoleColor DEFAULT_BG = ConsoleColor.Black;
-        public const ConsoleColor DEFAULT_READ_FG = ConsoleColor.Black;
-        public const ConsoleColor DEFAULT_READ_BG = ConsoleColor.White;
+        public const ConsoleColor DEFAULT_READ_FG = ConsoleColor.Blue;
+        public const ConsoleColor DEFAULT_READ_BG = ConsoleColor.Black;
 
         public ConsoleColors() {
             Foreground = Console.ForegroundColor;
@@ -54,7 +54,7 @@ namespace Net6
             Console.ForegroundColor = Foreground; 
             Console.BackgroundColor = Background;
         }
-        public void ResetDefault()
+        public static void ResetDefault()
         {
             Console.ForegroundColor = DEFAULT_FG;
             Console.BackgroundColor = DEFAULT_BG;
@@ -74,6 +74,10 @@ namespace Net6
         public static string? ReadLineWithTempColors(ConsoleColor foreground, ConsoleColor background)
         {
             ConsoleColors origin = new();
+
+            Console.ForegroundColor = foreground;
+            Console.BackgroundColor = background;
+
             string? str = Console.ReadLine();
             origin.SetToConsole();
             return str;

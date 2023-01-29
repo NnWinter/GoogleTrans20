@@ -38,21 +38,10 @@ namespace Net6
 
             File.WriteAllText(OPTIONS_FILE_PATH, ExitKeyStr);
         }
-        public void Modify()
+        public static void Modify()
         {
             throw new NotImplementedException();
             ConsoleColors.ReadLineWithTempColors();
         }
-    }
-    public class Option
-    {
-        /// <summary>
-        /// 用于进行翻译的语言列表
-        /// </summary>
-        public List<string> LanguageList { get; private set; }
-        /// <summary>
-        /// 翻译的次数 ( 如果是 4 个语言，则次数为 3 )
-        /// </summary>
-        public int ExecuteTimes { get; private set; }
     }
 }
