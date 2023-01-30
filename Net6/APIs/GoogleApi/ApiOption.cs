@@ -90,16 +90,14 @@ namespace Net6.APIs.GoogleApi
         {
             // 输出当前语言列表
 
-            Console.Write("\n起始语言 = "); Lan_Start.Print(); 
-            Console.Write("\n中间语言 = "); 
-            for(int i = 0; i< LanguageList.Count; i++) 
-            { 
-                LanguageList.ElementAt(i).Print(); 
-                if(i < LanguageList.Count - 1) { Console.Write(", "); }
-            }
-            Console.Write("\n结尾语言 = "); Lan_End.Print(); 
+            PrintLanListOptionStr(Lan_Start, LanguageList, Lan_End);
 
             // 输入新语言列表
+
+            Func<string,Language> GetLan = (lanStr) =>
+            {
+
+            };
 
             Console.Write("\n\n输入要指定的起始语言：");
             var input = ConsoleColors.ReadLineWithTempColors(); if (input == null) { Tools.ShowError("无效的输入[2301300826]", false); return; }
@@ -136,17 +134,14 @@ namespace Net6.APIs.GoogleApi
                 Tools.ShowWarning($"语言 {lan_end_str} 不存在于 Languages.txt，请注意 API 是否支持该语言");
             }
 
+            // 显示预览
+
+            Console.WriteLine("修改预览：");
+            PrintLanListOptionStr(lan_start, lan_list, lan_end);
+
             // 确认修改
 
-            Console.Write("\n\n修改起始语言 = "); lan_start.Print();
-            Console.Write("\n修改中间语言 = ");
-            for (int i = 0; i < lan_list.Count; i++)
-            {
-                lan_list.ElementAt(i).Print();
-                if (i < lan_list.Count - 1) { Console.Write(", "); }
-            }
-            Console.Write("\n修改结尾语言 = "); lan_end.Print();
-            Console.Write("\n输入Y确认，输入其它取消. [Y]: ");
+            Console.Write("\n\n输入Y确认，输入其它取消. [Y]: ");
             input = ConsoleColors.ReadLineWithTempColors(); if (input == null) { Tools.ShowError("无效的输入[2301300856]", false); return; }
             if(input.Trim().ToLower() != "y"){ Console.WriteLine("操作已取消"); return; }
 
@@ -156,6 +151,9 @@ namespace Net6.APIs.GoogleApi
             Save();
             Console.WriteLine("已修改");
         }
+        /// <summary>
+        /// 修改翻译次数
+        /// </summary>
         private void ChangeExecuteTimes()
         {
             Console.Write(
@@ -173,6 +171,9 @@ namespace Net6.APIs.GoogleApi
             Save();
             Console.WriteLine($"API翻译次数修改成功\n当前次数为 {ExecuteTimes}");
         }
+        /// <summary>
+        /// 修改翻译间隔
+        /// </summary>
         private void ChangeInterval()
         {
             Console.Write(
@@ -190,6 +191,25 @@ namespace Net6.APIs.GoogleApi
             Save();
             Console.WriteLine($"API调用间隔修改成功\n当前间隔为 {Interval}ms");
         }
+        private void PrintLanListOptionStr(Language start, List<Language> list, Language end)
+        {
+            Console.Write("\n起始语言 = "); start.Print();
+            Console.Write("\n中间语言 = ");
+            for (int i = 0; i < list.Count; i++)
+            {
+                list.ElementAt(i).Print();
+                if (i < list.Count - 1) { Console.Write(", "); }
+            }
+            Console.Write("\n结尾语言 = "); end.Print();
+        }
+        public void Print()
+        {
+            Console.WriteLine($"使用的API = {Api.Name}");
+            PrintLanListOptionStr(); Console.WriteLine();
+        }
+        /// <summary>
+        /// 保存设置到文件
+        /// </summary>
         private void Save()
         {
             //try

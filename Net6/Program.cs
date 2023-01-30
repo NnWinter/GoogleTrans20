@@ -71,6 +71,7 @@ while (mainLoop)
         // 翻译输入界面
         case Stage.TRANS:
             {
+                Console.
                 throw new NotImplementedException();
                 break;
             }
