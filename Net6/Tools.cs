@@ -34,6 +34,22 @@ namespace Net6
         {
             ConsoleColors.WriteWithTempColors(message, ConsoleColor.Yellow, ConsoleColor.Black);
         }
+        /// <summary>
+        /// 读取用户的输入信息(多行)
+        /// </summary>
+        /// <returns>用户输入的文本</returns>
+        public static string? ReadLines()
+        {
+            var input = new StringBuilder();
+            while (true)
+            {
+                var line = Console.ReadLine();
+                if (line == null) { input.AppendLine(); continue; }
+                if (line.Trim() == GlobalOptions.ExitStr) { break; }
+                input.AppendLine(line);
+            }
+            return input.ToString();
+        }
     }
     class ConsoleColors
     {

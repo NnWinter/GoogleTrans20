@@ -16,27 +16,16 @@ internal class InputWindow
     public string? ReadWithTextView()
     {
         var input = new StringBuilder();
-        while (Flag)
+        while (true)
         {
-            var temp = new StringBuilder();
-
-            var key = Console.ReadKey(false);
-            if (key.Key == ConsoleKey.End) { break; }
-            else
-            {
-                temp.Append(key.KeyChar);
-            }
-
             var line = Console.ReadLine();
             if (line == null) { input.AppendLine(); continue; }
             if (line.Trim() == "%%") { break; }
             if (Flag)
             {
-                temp.Append(line);
+                input.AppendLine(line);
             }
-            input.AppendLine(temp.ToString());
         }
-
         return input.ToString();
     }
 }

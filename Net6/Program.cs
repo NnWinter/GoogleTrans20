@@ -82,10 +82,9 @@ while (mainLoop)
                 GlobalOptions.Print();
 
                 // 用户输入
-                Console.WriteLine("\n");
-
-                var input = InputWindow.ReadWithTextView("输入要翻译的文本 并点击确认");
-                if(input == null) { Tools.ShowError("输入的内容为 Null [2301302224]", false); stage = Stage.API_MENU; continue; }
+                Console.WriteLine("\n---- 输入要翻译的文本 ----");
+                var input = Tools.ReadLines();
+                if (input == null) { Tools.ShowError("输入的内容为 Null [2301302224]", false); stage = Stage.API_MENU; continue; }
 
                 var result = api.TranslateByConfig(input);
 
