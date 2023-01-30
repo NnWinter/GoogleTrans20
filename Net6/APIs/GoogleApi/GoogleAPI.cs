@@ -15,7 +15,7 @@ namespace Net6.APIs.GoogleApi
     {
         public override string Name { get; init; } = "GoogleApi";
         public override string ApiUri { get; init; } = "https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}&tl={1}&dt=t&q={2}";
-        public override List<Language> Languages { get; set; }
+        public override Language[] Languages { get; init; }
         public override string DirectoryPath { get; init; }
         public override ApiOption ApiOption { get; init; }
         public GoogleAPI()
@@ -28,9 +28,9 @@ namespace Net6.APIs.GoogleApi
             {
                 Tools.ShowError($"加载 {Name} 的语言列表时发生了 \"语言列表为 null\" 的致命错误[2301291205]", true);
                 // 虽然已经退出了，但是用来消除编译器警告
-                Languages = new(); return;
+                Languages = Array.Empty<Language>(); return;
             }
-            Languages = lanTemp;
+            Languages = lanTemp.ToArray();
         }
         public override string? Translate(string fromLanguage, string toLanguage, string text)
         {
@@ -87,9 +87,60 @@ namespace Net6.APIs.GoogleApi
                 return null;
             }
         }
-        public override string? TranslateByConfig()
+        public override string? TranslateByConfig(string text)
         {
+            if (ApiOption.UseRandom)
+            {
+                // 创建随机语言列表
+                var random = new Random((int)(DateTime.Now.Ticks % int.MaxValue));
+
+                var lan_list = new Queue<Language>();
+                lan_list.Enqueue(ApiOption.Lan_Start);
+                var count = 0;
+
+                var prev_index = -1; // 用于记录上一个语言的序号，避免重复
+                while(count < ApiOption.ExecuteTimes - 1)
+                {
+                    var index = random.Next() % Languages.Length;
+                    if(index == prev_index) { continue; }
+                    lan_list.Enqueue(Languages[index]);
+                    count++;
+                }
+
+                lan_list.Enqueue(ApiOption.Lan_End);
+                // 翻译
+                // return TranslateByLanQueue(lan_list, text);
+                Language lan;
+                while (lan_list.TryDequeue(out lan)) { lan.Print(); Console.Write(","); }
+            }
+            else
+            {
+                var lan_list = new Queue<Language>();
+                var count = 0;
+
+                var prev = ApiOption.Lan_Start;
+
+            }
             throw new NotImplementedException();
+        }
+        /// <summary>
+        /// 根据语言队列进行翻译
+        /// </summary>
+        /// <param name="queue">语言队列</param>
+        /// <param name="text">要翻译的文本</param>
+        /// <returns></returns>
+        private string? TranslateByLanQueue(Queue<Language> queue, string text)
+        {
+            Language prev = queue.Dequeue();
+            Language? next;
+            while(queue.TryDequeue(out next))
+            {
+                var text_temp = Translate(prev.ShortName, next.ShortName, text);
+                if(string.IsNullOrEmpty(text_temp)) { Tools.ShowError($"{Name} 翻译文本时返回了空文本[2301301124]\n源语言 = {prev.ShortName}, 目标语言 = {next.ShortName}", false); return null; }
+                text = text_temp;
+                Thread.Sleep(ApiOption.Interval);
+            }
+            return text;
         }
     }
 }

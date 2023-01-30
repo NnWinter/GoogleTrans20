@@ -10,7 +10,7 @@ namespace Net6.APIs.YoudaoApi
     {
         public override string Name { get; init; } = "YoudaoApi";
         public override string ApiUri { get; init; } = "http://fanyi.youdao.com/translate?&doctype=json&type={0}2{1}&i={2}";
-        public override List<Language> Languages { get; set; }
+        public override Language[] Languages { get; init; }
         public override string DirectoryPath { get; init; }
         public override ApiOption ApiOption { get; init; }
         public YoudaoAPI()
@@ -23,9 +23,9 @@ namespace Net6.APIs.YoudaoApi
             {
                 Tools.ShowError($"加载 {Name} 的语言列表时发生了 \"语言列表为 null\" 的致命错误[2301301031]", true);
                 // 虽然已经退出了，但是用来消除编译器警告
-                Languages = new(); return;
+                Languages = Array.Empty<Language>(); return;
             }
-            Languages = lanTemp;
+            Languages = lanTemp.ToArray();
         }
         public override string? Translate(string fromLanguage, string toLanguage, string text)
         {
@@ -82,7 +82,7 @@ namespace Net6.APIs.YoudaoApi
                 return null;
             }
         }
-        public override string? TranslateByConfig()
+        public override string? TranslateByConfig(string text)
         {
             throw new NotImplementedException();
         }

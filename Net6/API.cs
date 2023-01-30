@@ -20,7 +20,7 @@ namespace Net6
         /// <summary>
         /// 记录 API 中的语言列表
         /// </summary>
-        public abstract List<Language> Languages { get; set; }
+        public abstract Language[] Languages { get; init; }
         /// <summary>
         /// 储存 API 的设置
         /// </summary>
@@ -41,6 +41,6 @@ namespace Net6
         /// 根据设置进行翻译
         /// </summary>
         /// <returns>翻译后的文本</returns>
-        public abstract string? TranslateByConfig();
+        public abstract string? TranslateByConfig(string text);
     }
 }

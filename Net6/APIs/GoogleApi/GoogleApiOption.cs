@@ -31,13 +31,23 @@ namespace Net6.APIs.GoogleApi
             var loopFlag = true;
             while (loopFlag)
             {
+                var lanListPreview = new StringBuilder();
+                if (UseRandom) { lanListPreview.Append("随机"); }
+                else
+                {
+                    lanListPreview = new StringBuilder(Lan_Start.ShortName + ", ");
+                    foreach (Language lan in Lan_List) { lanListPreview.Append(lan.ShortName + ", "); }
+                    lanListPreview.Append(Lan_End.ShortName);
+                }
+
                 Console.Write(
                 "\n==== 修改API设置 ====\n\n" +
                 $" API - {Api.Name}\n\n" +
                 $"  [0] 返回 API 界面\n\n" +
-                $"  [1] 修改语言列表\n" +
-                $"  [2] 修改翻译次数\n" +
-                $"  [3] 修改调用API的间隔\n\n"
+                $"  [1] 修改语言列表 <{lanListPreview}>\n" +
+                $"  [2] 修改翻译次数 <{ExecuteTimes}>\n" +
+                $"  [3] 修改调用API的间隔 <{Interval}ms>\n" +
+                $"  [4] 切换 随机语言/固定语言 模式 <{(UseRandom ? "随机" : "固定")}>\n\n"
                 );
 
                 var input = ConsoleColors.ReadLineWithTempColors();
@@ -49,6 +59,7 @@ namespace Net6.APIs.GoogleApi
                     case "1": ChangeLanguageList(); continue;
                     case "2": ChangeExecuteTimes(); continue;
                     case "3": ChangeInterval(); continue;
+                    case "4": UseRandom = !UseRandom; continue;
                     default: Tools.ShowError("无效的选择[2301292019]", false); continue;
                 }
             }
@@ -61,7 +72,8 @@ namespace Net6.APIs.GoogleApi
 
             // 语言列表
 
-            PrintLanListOptionStr(Lan_Start, Lan_List, Lan_End); Console.WriteLine();
+            if (UseRandom) { Console.WriteLine("语言列表 = 随机"); }
+            else { Console.Write("语言列表 = "); PrintLanListOptionStr(Lan_Start, Lan_List, Lan_End); Console.WriteLine(); }
 
             // 翻译次数
 
@@ -169,10 +181,9 @@ namespace Net6.APIs.GoogleApi
             var input = ConsoleColors.ReadLineWithTempColors();
             if (input == null) { Tools.ShowError("无效的输入[2301292047]", false); return; }
 
-            int newExecuteTimes;
-            var isNum = int.TryParse(input, out newExecuteTimes);
+            var isNum = int.TryParse(input, out int newExecuteTimes);
             if (!isNum) { Tools.ShowError("输入不是有效的32位整数[2301292048]", false); return; }
-            if(newExecuteTimes < 1) { Tools.ShowError("至少需要翻译1次[2301301038]", false); return; } 
+            if (newExecuteTimes < 1) { Tools.ShowError("至少需要翻译1次[2301301038]", false); return; }
 
             ExecuteTimes = newExecuteTimes;
             Save();
@@ -190,15 +201,14 @@ namespace Net6.APIs.GoogleApi
             var input = ConsoleColors.ReadLineWithTempColors();
             if (input == null) { Tools.ShowError("无效的输入[2301292027]", false); return; }
 
-            int newInterval;
-            var isNum = int.TryParse(input, out newInterval);
+            var isNum = int.TryParse(input, out int newInterval);
             if (!isNum) { Tools.ShowError("输入不是有效的32位整数[2301292029]", false); return; }
 
             Interval = newInterval;
             Save();
             Console.WriteLine($"\nAPI调用间隔修改成功\n当前间隔为 {Interval}ms");
         }
-        private void PrintLanListOptionStr(Language start, List<Language> list, Language end)
+        private static void PrintLanListOptionStr(Language start, List<Language> list, Language end)
         {
             Console.Write("\n起始语言 = "); start.Print();
             Console.Write("\n中间语言 = ");
