@@ -1,70 +1,42 @@
-﻿using System.Diagnostics;
-using System.Text;
-
-using Terminal.Gui;
-
-Console.WriteLine("Hello World");
-
-// 这一行很重要，不加的话中文文本会显示框框 (可能是由于中文字符占位导致的)
-Application.UseSystemConsole = true; 
-
-Application.Init();
+﻿using System.Text;
 
 
-Colors.Base.Normal = Application.Driver.MakeAttribute(Color.White, Color.Black);
+InputWindow win = new();
 
-Application.Run< ExampleWindow>();
+var result = win.ReadWithTextView();
+Console.WriteLine(result);
 
-
-Console.WriteLine($"Username: {((ExampleWindow)Application.Top).usernameText.Text}");
-
-// Before the application exits, reset Terminal.Gui for clean shutdown
-Application.Shutdown();
-
-Console.WriteLine("Hello World");
-
-Console.ReadLine();
-
-
-// Defines a top-level window with border and title
-public class ExampleWindow : Window
+internal class InputWindow
 {
-    public TextView usernameText;
-
-    public ExampleWindow()
+    public bool Flag = true;
+    /// <summary>
+    /// 读取用户的输入信息(多行)
+    /// </summary>
+    /// <returns>用户输入的文本</returns>
+    public string? ReadWithTextView()
     {
-        this.
-        Title = "输入框 (鼠标右键显示菜单, Paste = 粘贴, PageUp/PageDown 翻页)";
-
-        usernameText = new TextView()
+        var input = new StringBuilder();
+        while (Flag)
         {
-            X = 2,
-            Y = 1,
-            // Fill remaining horizontal space
-            Width = Dim.Fill() - 2,
-            Height = Dim.Fill() - 3
-        };
+            var temp = new StringBuilder();
 
-        // Create login button
-        var btnLogin = new Button()
-        {
-            Text = "确认",
-            Y = Pos.Bottom(usernameText) +1,
-            // center the login button horizontally
-            X = Pos.Center(),
-            IsDefault = true,
-        };
+            var key = Console.ReadKey(false);
+            if (key.Key == ConsoleKey.End) { break; }
+            else
+            {
+                temp.Append(key.KeyChar);
+            }
 
-        // When login button is clicked display a message popup
-        btnLogin.Clicked += () => {
-            Console.WriteLine("Test");
+            var line = Console.ReadLine();
+            if (line == null) { input.AppendLine(); continue; }
+            if (line.Trim() == "%%") { break; }
+            if (Flag)
+            {
+                temp.Append(line);
+            }
+            input.AppendLine(temp.ToString());
+        }
 
-            Thread.Sleep(100);
-
-            Application.RequestStop();
-            
-        };
-        // Add the views to the Window
-        Add(usernameText, btnLogin);
+        return input.ToString();
     }
 }
