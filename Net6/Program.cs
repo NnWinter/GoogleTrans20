@@ -1,6 +1,7 @@
 ﻿using Net6;
 using Net6.APIs.GoogleApi;
 using Net6.APIs.YoudaoApi;
+using System.Diagnostics;
 using System.Text;
 
 GlobalOptions.Load();           // 一定要预加载全剧设定
@@ -81,16 +82,36 @@ while (mainLoop)
                 GlobalOptions.Print();
 
                 // 用户输入
-                Console.WriteLine("\n---- 输入要翻译的文本 ----");
-                var input = new StringBuilder();
-                var flag = true; 
-                while (flag)
-                {
-                    var line = Console.ReadLine();
-                    if(line == null) { input.AppendLine(); continue; }
-                    if(line.Trim() == GlobalOptions.ExitStr) { break; }
-                    input.AppendLine(line);
-                }
+                Console.WriteLine("\n在新窗口中输入要翻译的文本\n输入完成后关闭新窗口");
+
+                Func<string> GetInputInNewWindow = () => {
+                    var input = new StringBuilder();
+
+                    Process process = new Process();
+                    process.StartInfo.UseShellExecute = false;
+                    process.StartInfo.RedirectStandardOutput = true;// false;
+                    process.StartInfo.RedirectStandardError = true; // false;
+                    process.StartInfo.RedirectStandardInput = true; // new
+
+                    string output = process.StandardOutput.ReadToEnd();
+                    string error = process.StandardError.ReadToEnd();
+
+                    process.WaitForExit();
+        return output;
+
+                    var flag = true;
+                    while (flag)
+                    {
+                        var line = Console.ReadLine();
+                        if (line == null) { input.AppendLine(); continue; }
+                        if (line.Trim() == GlobalOptions.ExitStr) { break; }
+                        input.AppendLine(line);
+                    }
+
+                    Console.WriteLine("---- 输入要翻译的文本 ----");
+                };
+                
+                
 
                 api.TranslateByConfig("床前明月光，疑是地上霜。\n举头望明月，低头思故乡。");
 
