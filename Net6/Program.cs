@@ -2,21 +2,23 @@
 using Net6.APIs.GoogleApi;
 using Net6.APIs.YoudaoApi;
 
-GlobalOptions.Load();
-ConsoleColors.ResetDefault();
+GlobalOptions.Load();           // 一定要预加载全剧设定
+ConsoleColors.ResetDefault();   // 多次重复运行调试器可能会导致颜色不还原
 
 
 //Test.TestAPIs();
 
-// 菜单
-Stage stage = Stage.MAIN;
-// API
-API? api = null;
 
-while (true)
+Stage stage = Stage.MAIN;   // 菜单
+API? api = null;            // API
+var mainLoop = true;        // 循环flag
+while (mainLoop)
 {
     switch (stage)
     {
+        // 退出程序
+        case Stage.EXIT:
+            mainLoop = false; break;
         // 主菜单 选择API
         case Stage.MAIN:
             {
@@ -41,12 +43,14 @@ while (true)
                     default: Tools.ShowError("无效的选择[2301291853]", false); continue;
                 }
             }
+        // API 选项菜单
         case Stage.API_MENU:
             {
                 if (api == null) { Tools.ShowError("无效的API[2301291854]", false); stage = Stage.MAIN; continue; }
                 Console.Write(
-                "\n\n==== API ====\n" +
-                $"  [0] 返回主菜单\n" +
+                "\n==== API ====\n\n" +
+                $" API - {api.Name}\n\n" +
+                $"  [0] 返回主菜单\n\n" +
                 $"  [1] 翻译文本\n" +
                 $"  [2] 修改设置\n\n>"
                 );
@@ -61,11 +65,18 @@ while (true)
                     case "0": stage = Stage.MAIN; continue;     // 返回主菜单
                     case "1": stage = Stage.TRANS; continue;    // 翻译
                     case "2": api.Config(); continue;           // 修改API设置
-                    default: Tools.ShowError("无效的输入[2301291904]", false); continue;
+                    default: Tools.ShowError("无效的选择[2301291904]", false); continue;
                 }
+            }
+        // 翻译输入界面
+        case Stage.TRANS:
+            {
+                throw new NotImplementedException();
+                break;
             }
     }
     Thread.Sleep(1000); // DEBUG
+    Console.WriteLine("无限循环中");
 }
 
 Console.WriteLine();

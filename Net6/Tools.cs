@@ -29,6 +29,10 @@ namespace Net6
                 Environment.Exit(1);
             }
         }
+        public static void ShowWarning(string message)
+        {
+            ConsoleColors.WriteWithTempColors(message, ConsoleColor.Yellow, ConsoleColor.Black);
+        }
     }
     class ConsoleColors
     {
