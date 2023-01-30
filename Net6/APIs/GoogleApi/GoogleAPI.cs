@@ -151,6 +151,7 @@ namespace Net6.APIs.GoogleApi
                 var text_temp = Translate(prev.ShortName, next.ShortName, text);
                 if (string.IsNullOrEmpty(text_temp)) { Tools.ShowError($"{Name} 翻译文本时返回了空文本[2301301124]\n源语言 = {prev.ShortName}, 目标语言 = {next.ShortName}", false); return null; }
                 text = text_temp;
+                prev = next;
                 if (GlobalOptions.ShowProcess) { Console.WriteLine("\n---- 翻译过程 ----\n" + text); } // 是否显示翻译过程
                 Thread.Sleep(ApiOption.Interval);
             }

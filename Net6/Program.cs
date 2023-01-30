@@ -82,38 +82,12 @@ while (mainLoop)
                 GlobalOptions.Print();
 
                 // 用户输入
-                Console.WriteLine("\n在新窗口中输入要翻译的文本\n输入完成后关闭新窗口");
+                Console.WriteLine("\n");
 
-                Func<string> GetInputInNewWindow = () => {
-                    var input = new StringBuilder();
+                var input = InputWindow.ReadWithTextView("输入要翻译的文本 并点击确认");
+                if(input == null) { Tools.ShowError("输入的内容为 Null [2301302224]", false); stage = Stage.API_MENU; continue; }
 
-                    Process process = new Process();
-                    process.StartInfo.UseShellExecute = false;
-                    process.StartInfo.RedirectStandardOutput = true;// false;
-                    process.StartInfo.RedirectStandardError = true; // false;
-                    process.StartInfo.RedirectStandardInput = true; // new
-
-                    string output = process.StandardOutput.ReadToEnd();
-                    string error = process.StandardError.ReadToEnd();
-
-                    process.WaitForExit();
-        return output;
-
-                    var flag = true;
-                    while (flag)
-                    {
-                        var line = Console.ReadLine();
-                        if (line == null) { input.AppendLine(); continue; }
-                        if (line.Trim() == GlobalOptions.ExitStr) { break; }
-                        input.AppendLine(line);
-                    }
-
-                    Console.WriteLine("---- 输入要翻译的文本 ----");
-                };
-                
-                
-
-                api.TranslateByConfig("床前明月光，疑是地上霜。\n举头望明月，低头思故乡。");
+                var result = api.TranslateByConfig(input);
 
                 stage = Stage.API_MENU;
                 break;

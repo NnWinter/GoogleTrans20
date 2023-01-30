@@ -5,7 +5,16 @@ using Terminal.Gui;
 
 Console.WriteLine("Hello World");
 
-Application.Run<ExampleWindow>();
+// 这一行很重要，不加的话中文文本会显示框框 (可能是由于中文字符占位导致的)
+Application.UseSystemConsole = true; 
+
+Application.Init();
+
+
+Colors.Base.Normal = Application.Driver.MakeAttribute(Color.White, Color.Black);
+
+Application.Run< ExampleWindow>();
+
 
 Console.WriteLine($"Username: {((ExampleWindow)Application.Top).usernameText.Text}");
 
@@ -20,48 +29,27 @@ Console.ReadLine();
 // Defines a top-level window with border and title
 public class ExampleWindow : Window
 {
-    public TextField usernameText;
+    public TextView usernameText;
 
     public ExampleWindow()
     {
-        Title = "Example App (Ctrl+Q to quit)";
+        this.
+        Title = "输入框 (鼠标右键显示菜单, Paste = 粘贴, PageUp/PageDown 翻页)";
 
-        // Create input components and labels
-        var usernameLabel = new Label()
+        usernameText = new TextView()
         {
-            Text = "Username:"
-        };
-
-        usernameText = new TextField("")
-        {
-            // Position text field adjacent to the label
-            X = Pos.Right(usernameLabel) + 1,
-
+            X = 2,
+            Y = 1,
             // Fill remaining horizontal space
-            Width = Dim.Fill(),
-        };
-
-        var passwordLabel = new Label()
-        {
-            Text = "Password:",
-            X = Pos.Left(usernameLabel),
-            Y = Pos.Bottom(usernameLabel) + 1
-        };
-
-        var passwordText = new TextField("")
-        {
-            Secret = true,
-            // align with the text box above
-            X = Pos.Left(usernameText),
-            Y = Pos.Top(passwordLabel),
-            Width = Dim.Fill(),
+            Width = Dim.Fill() - 2,
+            Height = Dim.Fill() - 3
         };
 
         // Create login button
         var btnLogin = new Button()
         {
-            Text = "Login",
-            Y = Pos.Bottom(passwordLabel) + 1,
+            Text = "确认",
+            Y = Pos.Bottom(usernameText) +1,
             // center the login button horizontally
             X = Pos.Center(),
             IsDefault = true,
@@ -69,18 +57,14 @@ public class ExampleWindow : Window
 
         // When login button is clicked display a message popup
         btnLogin.Clicked += () => {
-            if (usernameText.Text == "admin" && passwordText.Text == "password")
-            {
-                MessageBox.Query("Logging In", "Login Successful", "Ok");
-                Application.RequestStop();
-            }
-            else
-            {
-                MessageBox.ErrorQuery("Logging In", "Incorrect username or password", "Ok");
-            }
-        };
+            Console.WriteLine("Test");
 
+            Thread.Sleep(100);
+
+            Application.RequestStop();
+            
+        };
         // Add the views to the Window
-        Add(usernameLabel, usernameText, passwordLabel, passwordText, btnLogin);
+        Add(usernameText, btnLogin);
     }
 }
