@@ -29,7 +29,7 @@ while (mainLoop)
                 " 选择API:\n" +
                 $"  [1] Google API (谷歌翻译)\n" +
                 $"  [2] Youdao API (有道翻译)\n" +
-                $"  [3] 修改全局设置 (快捷键等)\n\n"
+                $"  [3] 修改全局设置 (终止文本等)\n\n"
                 );
                 var apiSelection = ConsoleColors.ReadLineWithTempColors();
 

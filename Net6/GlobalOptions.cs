@@ -51,7 +51,7 @@ namespace Net6
                         // 消除注释
                         if (param.Contains("//")) { param = param[..param.IndexOf("//")]; }
                         // 拆分等号
-                        return param[(param.IndexOf('=')+1)..].Trim();
+                        return param[(param.IndexOf('=') + 1)..].Trim();
                     }
                     catch (Exception ex)
                     {
@@ -102,11 +102,43 @@ namespace Net6
         /// <summary>
         /// 修改全局设置
         /// </summary>
-        /// <exception cref="NotImplementedException"></exception>
         public static void Modify()
         {
-            throw new NotImplementedException();
-            ConsoleColors.ReadLineWithTempColors();
+            while (true)
+            {
+                Console.Write(
+               "\n==== 修改全局设置 ====\n\n" +
+               $"  [0] 返回主菜单\n\n" +
+               $"  [1] 修改终止输入的文本 <{ExitStr}>\n" +
+               $"  [2] 切换显示翻译过程 <{(ShowProcess ? "显示" : "隐藏")}>\n\n"
+               );
+
+                var input = ConsoleColors.ReadLineWithTempColors(); Console.WriteLine();
+                if (input == null) { Tools.ShowError("无效的输入[2301310731]", false); return; }
+
+                switch (input.Trim())
+                {
+                    case "0": return;
+                    case "1": ChangeExitStr(); break;
+                    case "2": ShowProcess = !ShowProcess; break;
+                }
+
+                // 保存修改
+                Save();
+            }
+        }
+        /// <summary>
+        /// 修改终止文本
+        /// </summary>
+        private static void ChangeExitStr()
+        {
+            Console.WriteLine("输入要用于作为终止输入的文本\n");
+
+            var input = ConsoleColors.ReadLineWithTempColors(); Console.WriteLine();
+            if (input == null) { Tools.ShowError("无效的输入[2301310739]", false); return; }
+            if (string.IsNullOrWhiteSpace(input)) { Tools.ShowError("终止文本不可为空[2301310741]", false); return; }
+
+            ExitStr = input.Trim();
         }
         /// <summary>
         /// 输出全局设置信息
