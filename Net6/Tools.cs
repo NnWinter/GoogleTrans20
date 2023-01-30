@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,11 +22,11 @@ namespace Net6
 
             if (isFatel)
             {
-                Console.WriteLine("\n\n由于遇到了致命错误，" + (readLine ? "按回车退出":"按任意键退出"));
+                Console.WriteLine("\n\n由于遇到了致命错误，" + (readLine ? "按回车退出" : "按任意键退出"));
 
                 if (readLine) { Console.ReadLine(); }
                 else { Console.ReadKey(); }
-                
+
                 Environment.Exit(1);
             }
         }
@@ -41,21 +42,22 @@ namespace Net6
 
         public const ConsoleColor DEFAULT_FG = ConsoleColor.White;
         public const ConsoleColor DEFAULT_BG = ConsoleColor.Black;
-        public const ConsoleColor DEFAULT_READ_FG = ConsoleColor.Blue;
+        public const ConsoleColor DEFAULT_READ_FG = ConsoleColor.DarkCyan;
         public const ConsoleColor DEFAULT_READ_BG = ConsoleColor.Black;
 
-        public ConsoleColors() {
+        public ConsoleColors()
+        {
             Foreground = Console.ForegroundColor;
             Background = Console.BackgroundColor;
         }
         public ConsoleColors(ConsoleColor foreground, ConsoleColor background)
         {
-            Foreground = foreground; 
+            Foreground = foreground;
             Background = background;
         }
         public void SetToConsole()
         {
-            Console.ForegroundColor = Foreground; 
+            Console.ForegroundColor = Foreground;
             Console.BackgroundColor = Background;
         }
         public static void ResetDefault()
@@ -69,7 +71,7 @@ namespace Net6
 
             Console.ForegroundColor = foreground;
             Console.BackgroundColor = background;
-            
+
 
             Console.Write(text);
 
@@ -88,6 +90,15 @@ namespace Net6
         }
         public static string? ReadLineWithTempColors()
         {
+            ConsoleColors origin = new();
+
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.BackgroundColor = ConsoleColor.Black;
+
+            Console.Write(">");
+
+            origin.SetToConsole();
+
             return ReadLineWithTempColors(DEFAULT_READ_FG, DEFAULT_READ_BG);
         }
     }

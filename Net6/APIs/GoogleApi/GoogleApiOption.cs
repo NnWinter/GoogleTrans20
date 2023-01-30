@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Net6.APIs.GoogleApi
 {
-    class ApiOption
+    class GoogleApiOption : ApiOption
     {
-        /// <summary>
-        /// 用于进行翻译的中间语言列表 (可以不含起始和结尾)
-        /// </summary>
-        public List<Language> LanguageList { get; private set; } = new List<Language>
+        #region ==== 通用方法 ====
+
+        public override Language Lan_Start { get; protected set; } = new Language("zh", "简体中文");
+        public override List<Language> Lan_List { get; protected set; } = new List<Language>
         {
             new Language("af", null),
             new Language("cs", null),
@@ -20,43 +20,13 @@ namespace Net6.APIs.GoogleApi
             new Language("fr", "法语"),
             new Language("kn", null)
         };
-        /// <summary>
-        /// 翻译的次数 ( 如果是 4 个语言，则次数为 3 )
-        /// </summary>
-        public int ExecuteTimes { get; private set; } = 10;
-        /// <summary>
-        /// 调用 API 的等待间隔 ( 防止调用速度过快导致IP冷却 )
-        /// </summary>
-        public int Interval { get; private set; } = 2000;
-        /// <summary>
-        /// 是否使用随机语言
-        /// </summary>
-        public bool UseRandom { get; private set; } = true;
-        /// <summary>
-        /// 起始语言 (翻译前文本的语言)
-        /// </summary>
-        public Language Lan_Start { get; private set; } = new Language("zh", "简体中文");
-        /// <summary>
-        /// 结束语言 (翻译全部完成后应为本语言)
-        /// </summary>
-        public Language Lan_End { get; private set; } = new Language("zh", "简体中文");
-        /// <summary>
-        /// 所属的API (用于获取语言列表等)
-        /// </summary>
-        private GoogleAPI Api { get; init; }
-        /// <summary>
-        /// 设置文件的保存路径
-        /// </summary>
-        private string FilePath { get; init; }
-        public ApiOption(GoogleAPI api)
-        {
-            Api = api;
-            FilePath = Api.DirectoryPath + @"\Config.txt";
-        }
-        /// <summary>
-        /// 修改设置
-        /// </summary>
-        public void Modify()
+        public override Language Lan_End { get; protected set; } = new Language("zh", "简体中文");
+        public override int ExecuteTimes { get; protected set; } = 10;
+        public override int Interval { get; protected set; } = 2000;
+        public override bool UseRandom { get; protected set; } = true;
+        public override API Api { get; init; }
+        public override string FilePath { get; init; }
+        public override void Modify()
         {
             var loopFlag = true;
             while (loopFlag)
@@ -67,7 +37,7 @@ namespace Net6.APIs.GoogleApi
                 $"  [0] 返回 API 界面\n\n" +
                 $"  [1] 修改语言列表\n" +
                 $"  [2] 修改翻译次数\n" +
-                $"  [3] 修改调用API的间隔\n\n>"
+                $"  [3] 修改调用API的间隔\n\n"
                 );
 
                 var input = ConsoleColors.ReadLineWithTempColors();
@@ -83,6 +53,48 @@ namespace Net6.APIs.GoogleApi
                 }
             }
         }
+        public override void Print()
+        {
+            // API 名称
+
+            Console.WriteLine($"使用的API = {Api.Name}");
+
+            // 语言列表
+
+            PrintLanListOptionStr(Lan_Start, Lan_List, Lan_End); Console.WriteLine();
+
+            // 翻译次数
+
+            Console.WriteLine($"翻译次数 = {ExecuteTimes}");
+
+            // 翻译间隔
+
+            Console.WriteLine($"翻译次数 = {Interval}ms");
+        }
+        public override void Save()
+        {
+            //try
+            //{
+            //    File.WriteAllText(FilePath, );
+            //}
+            //catch(Exception ex)
+            //{
+            //    Tools.ShowError($"保存设置文件错误\n{FilePath}\n{ex.Message}", true);
+            //}
+        }
+
+        #endregion
+        #region ==== 构造函数 ====
+
+        public GoogleApiOption(GoogleAPI api)
+        {
+            Api = api;
+            FilePath = Api.DirectoryPath + @"\Config.txt";
+        }
+
+        #endregion
+        #region ==== 特有方法 ====
+
         /// <summary>
         /// 修改语言列表
         /// </summary>
@@ -90,49 +102,40 @@ namespace Net6.APIs.GoogleApi
         {
             // 输出当前语言列表
 
-            PrintLanListOptionStr(Lan_Start, LanguageList, Lan_End);
+            PrintLanListOptionStr(Lan_Start, Lan_List, Lan_End);
+
+            // 将语言文本转换为 Language 类的函数
+
+            Func<string, Language> GetLan = (lanStr) =>
+            {
+                var lan = Api.Languages.FirstOrDefault(x => x.ShortName == lanStr);
+                if (lan == null)
+                {
+                    lan = new Language(lanStr, null);
+                    Tools.ShowWarning($"语言 {lanStr} 不存在于 Languages.txt，请注意 API 是否支持该语言");
+                }
+                return lan;
+            };
 
             // 输入新语言列表
 
-            Func<string,Language> GetLan = (lanStr) =>
-            {
-
-            };
-
             Console.Write("\n\n输入要指定的起始语言：");
             var input = ConsoleColors.ReadLineWithTempColors(); if (input == null) { Tools.ShowError("无效的输入[2301300826]", false); return; }
-            var lan_start_str = input.Trim();
-            var lan_start = Api.Languages.FirstOrDefault(x => x.ShortName == lan_start_str);
-            if (lan_start==null) 
-            {
-                lan_start = new Language(lan_start_str, null);
-                Tools.ShowWarning($"语言 {lan_start_str} 不存在于 Languages.txt，请注意 API 是否支持该语言");
-            }
+            var lan_start = GetLan(input.Trim());
 
             Console.Write("\n输入要指定的中间语言，以英文逗号分割：");
             input = ConsoleColors.ReadLineWithTempColors(); if (input == null) { Tools.ShowError("无效的输入[2301300838]", false); return; }
-            var lan_list_strs = input.Split(',').Select(x=>x.Trim());
+            var lan_list_strs = input.Split(',').Select(x => x.Trim());
             var lan_list = new List<Language>();
-            foreach(var lan_str in lan_list_strs)
+            foreach (var lan_str in lan_list_strs)
             {
-                var lan = Api.Languages.FirstOrDefault(x => x.ShortName == lan_str);
-                if (lan == null)
-                {
-                    lan = new Language(lan_str, null);
-                    Tools.ShowWarning($"语言 {lan_str} 不存在于 Languages.txt，请注意 API 是否支持该语言");
-                }
+                var lan = GetLan(lan_str.Trim());
                 lan_list.Add(lan);
             }
 
             Console.Write("\n输入要指定的结尾语言：");
             input = ConsoleColors.ReadLineWithTempColors(); if (input == null) { Tools.ShowError("无效的输入[2301300842]", false); return; }
-            var lan_end_str = input.Trim();
-            var lan_end = Api.Languages.FirstOrDefault(x => x.ShortName == lan_end_str);
-            if (lan_end == null)
-            {
-                lan_end = new Language(lan_end_str, null);
-                Tools.ShowWarning($"语言 {lan_end_str} 不存在于 Languages.txt，请注意 API 是否支持该语言");
-            }
+            var lan_end = GetLan(input.Trim());
 
             // 显示预览
 
@@ -143,13 +146,15 @@ namespace Net6.APIs.GoogleApi
 
             Console.Write("\n\n输入Y确认，输入其它取消. [Y]: ");
             input = ConsoleColors.ReadLineWithTempColors(); if (input == null) { Tools.ShowError("无效的输入[2301300856]", false); return; }
-            if(input.Trim().ToLower() != "y"){ Console.WriteLine("操作已取消"); return; }
+            if (input.Trim().ToLower() != "y") { Console.WriteLine("操作已取消"); return; }
+
+            // 修改并保存
 
             Lan_Start = lan_start;
-            LanguageList = lan_list;
+            Lan_List = lan_list;
             Lan_End = lan_end;
             Save();
-            Console.WriteLine("已修改");
+            Console.WriteLine("\nAPI修改翻译列表成功");
         }
         /// <summary>
         /// 修改翻译次数
@@ -158,7 +163,8 @@ namespace Net6.APIs.GoogleApi
         {
             Console.Write(
                 $"\n当前翻译次数为 {ExecuteTimes}\n" +
-                $"输入新的翻译次数 (短间隔频繁调用API可能导致冷却)\n\n>"
+                $"短间隔频繁调用API可能导致冷却\n" +
+                $"输入新的翻译次数 (含最终输出时的翻译)\n\n"
                 );
             var input = ConsoleColors.ReadLineWithTempColors();
             if (input == null) { Tools.ShowError("无效的输入[2301292047]", false); return; }
@@ -166,10 +172,11 @@ namespace Net6.APIs.GoogleApi
             int newExecuteTimes;
             var isNum = int.TryParse(input, out newExecuteTimes);
             if (!isNum) { Tools.ShowError("输入不是有效的32位整数[2301292048]", false); return; }
+            if(newExecuteTimes < 1) { Tools.ShowError("至少需要翻译1次[2301301038]", false); return; } 
 
             ExecuteTimes = newExecuteTimes;
             Save();
-            Console.WriteLine($"API翻译次数修改成功\n当前次数为 {ExecuteTimes}");
+            Console.WriteLine($"\nAPI翻译次数修改成功\n当前次数为 {ExecuteTimes}");
         }
         /// <summary>
         /// 修改翻译间隔
@@ -178,7 +185,7 @@ namespace Net6.APIs.GoogleApi
         {
             Console.Write(
                 $"\n当前调用API的间隔时间为 {Interval}ms\n" +
-                $"输入新的间隔 [ms] (短间隔频繁调用API可能导致冷却)\n\n>"
+                $"输入新的间隔 [ms] (短间隔频繁调用API可能导致冷却)\n\n"
                 );
             var input = ConsoleColors.ReadLineWithTempColors();
             if (input == null) { Tools.ShowError("无效的输入[2301292027]", false); return; }
@@ -189,7 +196,7 @@ namespace Net6.APIs.GoogleApi
 
             Interval = newInterval;
             Save();
-            Console.WriteLine($"API调用间隔修改成功\n当前间隔为 {Interval}ms");
+            Console.WriteLine($"\nAPI调用间隔修改成功\n当前间隔为 {Interval}ms");
         }
         private void PrintLanListOptionStr(Language start, List<Language> list, Language end)
         {
@@ -202,24 +209,7 @@ namespace Net6.APIs.GoogleApi
             }
             Console.Write("\n结尾语言 = "); end.Print();
         }
-        public void Print()
-        {
-            Console.WriteLine($"使用的API = {Api.Name}");
-            PrintLanListOptionStr(); Console.WriteLine();
-        }
-        /// <summary>
-        /// 保存设置到文件
-        /// </summary>
-        private void Save()
-        {
-            //try
-            //{
-            //    File.WriteAllText(FilePath, );
-            //}
-            //catch(Exception ex)
-            //{
-            //    Tools.ShowError($"保存设置文件错误\n{FilePath}\n{ex.Message}", true);
-            //}
-        }
+
+        #endregion
     }
 }

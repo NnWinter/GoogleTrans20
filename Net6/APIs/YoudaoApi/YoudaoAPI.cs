@@ -10,17 +10,22 @@ namespace Net6.APIs.YoudaoApi
     {
         public override string Name { get; init; } = "YoudaoApi";
         public override string ApiUri { get; init; } = "http://fanyi.youdao.com/translate?&doctype=json&type={0}2{1}&i={2}";
-        public override List<Language>? Languages { get; set; }
+        public override List<Language> Languages { get; set; }
         public override string DirectoryPath { get; init; }
-        private ApiOption Option;
+        public override ApiOption ApiOption { get; init; }
         public YoudaoAPI()
         {
             DirectoryPath = @$"APIs\{Name}";
+            ApiOption = new YoudaoApiOption(this);
 
-            Languages = Language.ReadLanguagesFromFile(DirectoryPath + @"\Languages.txt");
-            if (Languages == null) { Tools.ShowError($"加载 {Name} 的语言列表时发生了 \"语言列表为 null\" 的致命错误[2301292036]", true); }
-
-            Option = new ApiOption(this);
+            var lanTemp = Language.ReadLanguagesFromFile(DirectoryPath + @"\Languages.txt");
+            if (lanTemp == null)
+            {
+                Tools.ShowError($"加载 {Name} 的语言列表时发生了 \"语言列表为 null\" 的致命错误[2301301031]", true);
+                // 虽然已经退出了，但是用来消除编译器警告
+                Languages = new(); return;
+            }
+            Languages = lanTemp;
         }
         public override string? Translate(string fromLanguage, string toLanguage, string text)
         {
@@ -78,10 +83,6 @@ namespace Net6.APIs.YoudaoApi
             }
         }
         public override string? TranslateByConfig()
-        {
-            throw new NotImplementedException();
-        }
-        public override void Config()
         {
             throw new NotImplementedException();
         }

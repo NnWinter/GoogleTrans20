@@ -29,7 +29,7 @@ namespace Net6
         }
         public static void Save()
         {
-            string ExitKeyStr = 
+            string ExitKeyStr =
                 "// 结束输入的快捷键 (ConsoleKey)\n" +
                 $"ExitKey = {(long)ExitKey}";
             string ExitStrStr =

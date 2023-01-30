@@ -17,17 +17,18 @@ namespace Net6.APIs.GoogleApi
         public override string ApiUri { get; init; } = "https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}&tl={1}&dt=t&q={2}";
         public override List<Language> Languages { get; set; }
         public override string DirectoryPath { get; init; }
-        private ApiOption Option;
+        public override ApiOption ApiOption { get; init; }
         public GoogleAPI()
         {
             DirectoryPath = @$"APIs\{Name}";
-            Option = new ApiOption(this);
+            ApiOption = new GoogleApiOption(this);
 
             var lanTemp = Language.ReadLanguagesFromFile(DirectoryPath + @"\Languages.txt");
-            if (lanTemp == null) {
+            if (lanTemp == null)
+            {
                 Tools.ShowError($"加载 {Name} 的语言列表时发生了 \"语言列表为 null\" 的致命错误[2301291205]", true);
                 // 虽然已经退出了，但是用来消除编译器警告
-                Languages = new(); return; 
+                Languages = new(); return;
             }
             Languages = lanTemp;
         }
@@ -89,10 +90,6 @@ namespace Net6.APIs.GoogleApi
         public override string? TranslateByConfig()
         {
             throw new NotImplementedException();
-        }
-        public override void Config()
-        {
-            Option.Modify();
         }
     }
 }

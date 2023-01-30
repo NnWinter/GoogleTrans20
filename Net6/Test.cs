@@ -23,8 +23,8 @@ namespace Net6
             Console.WriteLine("测试: 创建 Youdao API - 完成");
             Console.WriteLine("测试: 使用 Youdao API 翻译 - 你好");
             Console.WriteLine("测试: 翻译结果 - " + youdaoApi.Translate("ZH_CN", "EN", "你好"));
-            
-            
+
+
         }
     }
 }
