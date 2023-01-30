@@ -145,7 +145,7 @@ namespace Net6.APIs.GoogleApi
                 lan_list.Add(lan);
             }
 
-            Console.Write("\n输入要指定的结尾语言：");
+            Console.Write("\n输入要指定的结束语言：");
             input = ConsoleColors.ReadLineWithTempColors(); if (input == null) { Tools.ShowError("无效的输入[2301300842]", false); return; }
             var lan_end = GetLan(input.Trim());
 
@@ -208,6 +208,12 @@ namespace Net6.APIs.GoogleApi
             Save();
             Console.WriteLine($"\nAPI调用间隔修改成功\n当前间隔为 {Interval}ms");
         }
+        /// <summary>
+        /// 输出语言列表
+        /// </summary>
+        /// <param name="start">起始语言</param>
+        /// <param name="list">中间语言</param>
+        /// <param name="end">结束语言</param>
         private static void PrintLanListOptionStr(Language start, List<Language> list, Language end)
         {
             Console.Write("\n起始语言 = "); start.Print();
@@ -217,7 +223,7 @@ namespace Net6.APIs.GoogleApi
                 list.ElementAt(i).Print();
                 if (i < list.Count - 1) { Console.Write(", "); }
             }
-            Console.Write("\n结尾语言 = "); end.Print();
+            Console.Write("\n结束语言 = "); end.Print();
         }
 
         #endregion

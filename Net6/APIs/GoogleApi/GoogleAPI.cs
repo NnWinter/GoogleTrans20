@@ -99,29 +99,42 @@ namespace Net6.APIs.GoogleApi
                 var count = 0;
 
                 var prev_index = -1; // 用于记录上一个语言的序号，避免重复
-                while(count < ApiOption.ExecuteTimes - 1)
+                while (count < ApiOption.ExecuteTimes - 1)
                 {
                     var index = random.Next() % Languages.Length;
-                    if(index == prev_index) { continue; }
+                    if (index == prev_index) { continue; }
                     lan_list.Enqueue(Languages[index]);
                     count++;
                 }
 
                 lan_list.Enqueue(ApiOption.Lan_End);
-                // 翻译
-                // return TranslateByLanQueue(lan_list, text);
-                Language lan;
-                while (lan_list.TryDequeue(out lan)) { lan.Print(); Console.Write(","); }
+#if DEBUG
+                var lans = lan_list.ToArray();
+                foreach(var l in lans){ l.Print(); Console.Write(","); }
+#endif
+                return TranslateByLanQueue(lan_list, text);
             }
             else
             {
                 var lan_list = new Queue<Language>();
+                lan_list.Enqueue(ApiOption.Lan_Start);
                 var count = 0;
 
                 var prev = ApiOption.Lan_Start;
+                var lan_array = ApiOption.Lan_List.ToArray();
+                while (count < ApiOption.ExecuteTimes - 1)
+                {
+                    lan_list.Enqueue(lan_array[count % lan_array.Length]);
+                    count++;
+                }
 
+                lan_list.Enqueue(ApiOption.Lan_End);
+#if DEBUG
+                var lans = lan_list.ToArray();
+                foreach (var l in lans) { l.Print(); Console.Write(","); }
+#endif
+                return TranslateByLanQueue(lan_list, text);
             }
-            throw new NotImplementedException();
         }
         /// <summary>
         /// 根据语言队列进行翻译
@@ -133,11 +146,12 @@ namespace Net6.APIs.GoogleApi
         {
             Language prev = queue.Dequeue();
             Language? next;
-            while(queue.TryDequeue(out next))
+            while (queue.TryDequeue(out next))
             {
                 var text_temp = Translate(prev.ShortName, next.ShortName, text);
-                if(string.IsNullOrEmpty(text_temp)) { Tools.ShowError($"{Name} 翻译文本时返回了空文本[2301301124]\n源语言 = {prev.ShortName}, 目标语言 = {next.ShortName}", false); return null; }
+                if (string.IsNullOrEmpty(text_temp)) { Tools.ShowError($"{Name} 翻译文本时返回了空文本[2301301124]\n源语言 = {prev.ShortName}, 目标语言 = {next.ShortName}", false); return null; }
                 text = text_temp;
+                if (GlobalOptions.ShowProcess) { Console.WriteLine("\n---- 翻译过程 ----\n" + text); } // 是否显示翻译过程
                 Thread.Sleep(ApiOption.Interval);
             }
             return text;

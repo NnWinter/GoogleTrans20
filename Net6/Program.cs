@@ -1,6 +1,7 @@
 ﻿using Net6;
 using Net6.APIs.GoogleApi;
 using Net6.APIs.YoudaoApi;
+using System.Text;
 
 GlobalOptions.Load();           // 一定要预加载全剧设定
 ConsoleColors.ResetDefault();   // 多次重复运行调试器可能会导致颜色不还原
@@ -57,7 +58,7 @@ while (mainLoop)
                 var input = ConsoleColors.ReadLineWithTempColors();
 
                 // 无效的选择
-                if (input == null) { Tools.ShowError("无效的输入[2301291855]", false); stage = Stage.MAIN; continue; }
+                if (input == null) { Tools.ShowError("无效的输入[2301291855]", false); stage = Stage.API_MENU; continue; }
 
                 // 使用 API 进行操作 或 返回主菜单
                 switch (input.Trim())
@@ -71,8 +72,29 @@ while (mainLoop)
         // 翻译输入界面
         case Stage.TRANS:
             {
-                //Console.
-                throw new NotImplementedException();
+                if (api == null) { Tools.ShowError("无效的API[2301301937]", false); stage = Stage.MAIN; continue; }
+
+                // 显示API信息
+                api.ApiOption.Print();
+
+                // 显示全局信息
+                GlobalOptions.Print();
+
+                // 用户输入
+                Console.WriteLine("\n---- 输入要翻译的文本 ----");
+                var input = new StringBuilder();
+                var flag = true; 
+                while (flag)
+                {
+                    var line = Console.ReadLine();
+                    if(line == null) { input.AppendLine(); continue; }
+                    if(line.Trim() == GlobalOptions.ExitStr) { break; }
+                    input.AppendLine(line);
+                }
+
+                api.TranslateByConfig("床前明月光，疑是地上霜。\n举头望明月，低头思故乡。");
+
+                stage = Stage.API_MENU;
                 break;
             }
     }
