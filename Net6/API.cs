@@ -30,7 +30,7 @@ namespace Net6
         /// <summary>
         /// 记录 API 中的语言列表
         /// </summary>
-        public abstract Dictionary<string,Language> Languages { get; init; }
+        public abstract Dictionary<string, string> Languages { get; init; }
         /// <summary>
         /// 储存 API 的设置
         /// </summary>
@@ -50,6 +50,7 @@ namespace Net6
         /// <summary>
         /// 根据设置进行翻译
         /// </summary>
+        /// <param name="text">要翻译的文本</param>
         /// <returns>翻译后的文本</returns>
         public abstract string? TranslateByConfig(string text);
         /// <summary>
@@ -66,7 +67,7 @@ namespace Net6
             {
                 File.AppendAllText(TRANS_RESULT_PATH, output);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 // 可以不退出程序，虽然不能保存到本地，但控制台里能正常复制的话，就当是个普通的警告
                 Tools.ShowError($"未能将翻译结果保存到文件[2301310858]\n{ex.Message}\n", false);
@@ -76,11 +77,12 @@ namespace Net6
         /// 将翻译过程保存到本地(添加)
         /// </summary>
         /// <param name="text">要保存的文本</param>
+        /// <param name="isOrigin">是否为原文</param>
         protected static void AppendProcessToFile(string text, bool isOrigin = false)
         {
             string datetime = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
             string output =
-                $"    ---- {datetime} {(isOrigin?"原文 ":"")}----\n" +
+                $"    ---- {datetime} {(isOrigin ? "原文 " : "")}----\n" +
                 $"{text}\n";
             try
             {

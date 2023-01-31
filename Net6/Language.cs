@@ -34,25 +34,25 @@ namespace Net6
         /// </summary>
         /// <param name="file">文件</param>
         /// <returns></returns>
-        public static List<Language>? ReadLanguagesFromFile(string path)
+        public static Dictionary<string, string?>? ReadLanguagesFromFile(string path)
         {
             try
             {
                 var sr = new StreamReader(path);
-                var languages = new List<Language>();
+                var languages = new Dictionary<string, string?>();
                 string? line;
                 while ((line = sr.ReadLine()) != null)
                 {
                     if (line.StartsWith("//")) { continue; } // 忽略注释行
                     try
                     {
-                        if (!line.Contains(',')) { languages.Add(new Language(line, null)); }
+                        if (!line.Contains(',')) { languages.Add(line, null); }
                         else
                         {
                             var index = line.IndexOf(',');
                             var shortName = line.Substring(0, index).Trim();
                             var fullName = line.Substring(index + 1).Trim();
-                            languages.Add(new Language(shortName, fullName));
+                            languages.Add(shortName, fullName);
                         }
                     }
                     catch
@@ -106,11 +106,36 @@ namespace Net6
         }
         public static void Print(string language)
         {
-
+            throw new NotImplementedException();
         }
-        public static Language GetLanguage(string language, Language[] languages)
+        /// <summary>
+        /// 从语言列表中查找语言缩写并返回对应的语言<br/>
+        /// 如果语言不存在则提示警告并以 FullName = null 返回新的 Language
+        /// </summary>
+        /// <param name="language">要查找的语言</param>
+        /// <param name="languages">语言列表</param>
+        /// <returns>找到/创建的语言</returns>
+        public static string? GetLanguageFullname(string language, Dictionary<string, string> languages)
         {
+            bool success = languages.TryGetValue(language, out string? lan);
+            if (!success || lan == null)
+            {
+                Tools.ShowWarning($"语言 {language} 不存在于 Languages.txt，请注意 API 是否支持该语言");
+            }
+            return lan;
+        }
 
+        /// <summary>
+        /// 将语言列表转换为字符串
+        /// </summary>
+        /// <param name="list">要转换的语言列表</param>
+        /// <returns>转换结果 如 "zh,en,fr,ja"</returns>
+        public static string LanListToString(List<string> list)
+        {
+            var result = new StringBuilder();
+            foreach (var language in list) { result.Append(language + ","); }
+            result.Remove(result.Length-1,1); // 返回结果是引用类型，不用管
+            return result.ToString();
         }
     }
 }

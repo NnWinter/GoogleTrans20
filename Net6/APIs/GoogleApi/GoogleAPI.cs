@@ -15,7 +15,7 @@ namespace Net6.APIs.GoogleApi
     {
         public override string Name { get; init; } = "GoogleApi";
         public override string ApiUri { get; init; } = "https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}&tl={1}&dt=t&q={2}";
-        public override Language[] Languages { get; init; }
+        public override Dictionary<string, string> Languages { get; init; } = new Dictionary<string, string>();
         public override string DirectoryPath { get; init; }
         public override ApiOption ApiOption { get; init; }
         public GoogleAPI()
@@ -27,10 +27,9 @@ namespace Net6.APIs.GoogleApi
             if (lanTemp == null)
             {
                 Tools.ShowError($"加载 {Name} 的语言列表时发生了 \"语言列表为 null\" 的致命错误[2301291205]", true);
-                // 虽然已经退出了，但是用来消除编译器警告
-                Languages = Array.Empty<Language>(); return;
+                return; // 虽然已经退出了，但是用来消除编译器警告
             }
-            Languages = lanTemp.ToArray();
+            Languages = lanTemp;
         }
         public override string? Translate(string fromLanguage, string toLanguage, string text)
         {

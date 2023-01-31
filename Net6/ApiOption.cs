@@ -62,18 +62,5 @@ namespace Net6
         /// 保存设置到文件
         /// </summary>
         public abstract void Save();
-        /// <summary>
-        /// 将语言列表转换为字符串
-        /// </summary>
-        /// <param name="list"></param>
-        /// <returns></returns>
-        protected static string LanListToString(List<Language> list)
-        {
-
-        }
-        protected List<Language> LanListFromString(string list) 
-        { 
-
-        }
     }
 }

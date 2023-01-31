@@ -35,9 +35,9 @@ namespace Net6.APIs.GoogleApi
                 if (UseRandom) { lanListPreview.Append("随机"); }
                 else
                 {
-                    lanListPreview = new StringBuilder(Lan_Start.ShortName + ", ");
-                    foreach (Language lan in Lan_List) { lanListPreview.Append(lan.ShortName + ", "); }
-                    lanListPreview.Append(Lan_End.ShortName);
+                    lanListPreview.Append(Lan_Start + ", ");
+                    lanListPreview.Append(Language.LanListToString(Lan_List) + ", ");
+                    lanListPreview.Append(Lan_End);
                 }
 
                 Console.Write(
@@ -122,20 +122,7 @@ namespace Net6.APIs.GoogleApi
         {
             // 输出当前语言列表
 
-            PrintLanListOptionStr(Lan_Start, Lan_List, Lan_End);
-
-            // 将语言文本转换为 Language 类的函数
-
-            Func<string, Language> GetLan = (lanStr) =>
-            {
-                var lan = Api.Languages.FirstOrDefault(x => x.ShortName == lanStr);
-                if (lan == null)
-                {
-                    lan = new Language(lanStr, null);
-                    Tools.ShowWarning($"语言 {lanStr} 不存在于 Languages.txt，请注意 API 是否支持该语言");
-                }
-                return lan;
-            };
+            PrintLanListOptionStr(Lan_Start, Lan_List, Lan_End, Language);
 
             // 输入新语言列表
 
@@ -222,7 +209,7 @@ namespace Net6.APIs.GoogleApi
         /// <param name="start">起始语言</param>
         /// <param name="list">中间语言</param>
         /// <param name="end">结束语言</param>
-        private static void PrintLanListOptionStr(Language start, List<Language> list, Language end)
+        private static void PrintLanListOptionStr(string start, List<string> list, string end)
         {
             Console.Write("\n起始语言 = "); start.Print();
             Console.Write("\n中间语言 = ");
