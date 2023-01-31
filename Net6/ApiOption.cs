@@ -83,6 +83,46 @@ namespace Net6
             Tools.SaveParamsToFile(FilePath, attributes);
         }
         /// <summary>
+        /// 修改翻译次数 [这俩玩意好像可以放抽象里直接用，不同API应该都通用]
+        /// </summary>
+        protected void ChangeExecuteTimes()
+        {
+            Console.Write(
+                $"\n当前翻译次数为 {ExecuteTimes}\n" +
+                $"短间隔频繁调用API可能导致冷却\n" +
+                $"输入新的翻译次数 (含最终输出时的翻译)\n\n"
+                );
+            var input = ConsoleColors.ReadLineWithTempColors();
+            if (input == null) { Tools.ShowError("无效的输入[2301292047]", false); return; }
+
+            var isNum = int.TryParse(input, out int newExecuteTimes);
+            if (!isNum) { Tools.ShowError("输入不是有效的32位整数[2301292048]", false); return; }
+            if (newExecuteTimes < 1) { Tools.ShowError("至少需要翻译1次[2301301038]", false); return; }
+
+            ExecuteTimes = newExecuteTimes;
+            Save();
+            Console.WriteLine($"\nAPI翻译次数修改成功\n当前次数为 {ExecuteTimes}");
+        }
+        /// <summary>
+        /// 修改翻译间隔 [同 ChangeExecuteTimes()]
+        /// </summary>
+        protected void ChangeInterval()
+        {
+            Console.Write(
+                $"\n当前调用API的间隔时间为 {Interval}ms\n" +
+                $"输入新的间隔 [ms] (短间隔频繁调用API可能导致冷却)\n\n"
+                );
+            var input = ConsoleColors.ReadLineWithTempColors();
+            if (input == null) { Tools.ShowError("无效的输入[2301292027]", false); return; }
+
+            var isNum = int.TryParse(input, out int newInterval);
+            if (!isNum) { Tools.ShowError("输入不是有效的32位整数[2301292029]", false); return; }
+
+            Interval = newInterval;
+            Save();
+            Console.WriteLine($"\nAPI调用间隔修改成功\n当前间隔为 {Interval}ms");
+        }
+        /// <summary>
         /// 输出语言列表
         /// </summary>
         /// <param name="start">起始语言</param>

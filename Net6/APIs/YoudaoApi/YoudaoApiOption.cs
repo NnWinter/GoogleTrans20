@@ -106,26 +106,53 @@ namespace Net6.APIs.YoudaoApi
 
         private void ChangeLanguageList()
         {
-            throw new NotImplementedException();
-        }
-        private void ChangeExecuteTimes()
-        {
-            throw new NotImplementedException();
-        }
-        private void ChangeInterval()
-        {
-            throw new NotImplementedException();
+            // 输出当前语言列表
 
+            PrintLanListOptionStr(Lan_Start, Lan_List, Lan_End, Api.Languages);
+
+            // 提示关于 YoudaoAPI 的语言特性
             Console.Write(
-                $"\n当前调用API的间隔时间为 {Interval}ms\n" +
-                $"输入新的间隔 [ms] (短间隔频繁调用API可能导致冷却)\n\n"
-                );
-            var input = ConsoleColors.ReadLineWithTempColors();
-            if (input == null) { Tools.ShowError("无效的输入[2301292027]", false); return; }
+                "\n\nAPI特别说明: 有道API官方说明只支持不同语言和中文之间的互译\n" +
+                "如 JA -> RU 这种转换，需要 JA -> ZH_CH -> RU 替代\n" +
+                "也因上述原因，使用随机时，需要注意翻译的次数");
 
-            int newInterval;
-            var isNum = int.TryParse(input, out newInterval);
-            if (!isNum) { Tools.ShowError("输入不是有效的32位整数[2301292029]", false); return; }
+            // 输入新语言列表
+            Console.Write("\n\n输入要指定的起始语言：");
+            var input = ConsoleColors.ReadLineWithTempColors(); if (input == null) { Tools.ShowError("无效的输入[2302010546]", false); return; }
+            var lan_start = input.Trim();
+
+            Console.Write("\n输入要指定的中间语言，以英文逗号分割：");
+            input = ConsoleColors.ReadLineWithTempColors(); if (input == null) { Tools.ShowError("无效的输入[2302010547]", false); return; }
+            var lan_list_strs = input.Split(',').Select(x => x.Trim());
+            var lan_list = new List<string>();
+            foreach (var lan_str in lan_list_strs)
+            {
+                var lan = lan_str.Trim();
+                lan_list.Add(lan);
+            }
+
+            Console.Write("\n输入要指定的结束语言：");
+            input = ConsoleColors.ReadLineWithTempColors(); if (input == null) { Tools.ShowError("无效的输入[2302010548]", false); return; }
+            var lan_end = input.Trim();
+
+            // 显示预览
+
+            Console.WriteLine("修改预览：");
+            PrintLanListOptionStr(lan_start, lan_list, lan_end, Api.Languages);
+
+            // 确认修改
+
+            Console.Write("\n\n输入Y确认，输入其它取消. [Y]: ");
+            input = ConsoleColors.ReadLineWithTempColors(); if (input == null) { Tools.ShowError("无效的输入[2302010549]", false); return; }
+            if (input.Trim().ToLower() != "y") { Console.WriteLine("操作已取消"); return; }
+
+            // 修改并保存
+
+            Lan_Start = lan_start;
+            Lan_List = lan_list;
+            Lan_End = lan_end;
+            Save();
+            Console.WriteLine("\nAPI修改翻译列表成功");
         }
 
         #endregion
