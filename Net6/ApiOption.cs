@@ -55,12 +55,49 @@ namespace Net6
         /// </summary>
         public abstract void Print();
         /// <summary>
-        /// 从文件中加载设置
+        /// 从文件中加载设置 [同Save()，抽象类: 所以爱会消失，是吗? ]
         /// </summary>
-        public abstract void Load();
+        public void Load()
+        {
+            if (!File.Exists(FilePath)) { Save(); }
+            else
+            {
+                // Tools.LoadParamFromFile();
+            }
+        }
         /// <summary>
-        /// 保存设置到文件
+        /// 保存设置到文件<br/>
+        /// [估计是这几天暴雨家里淹了没睡好，忘记这个方法可以在抽象类里直接共享了，这就省着写两遍了]
         /// </summary>
-        public abstract void Save();
+        public void Save()
+        {
+            var attributes = new Attribute[] {
+                new Attribute(LAN_START, Lan_Start, "起始语言"),
+                new Attribute(LAN_LIST, Language.LanListToString(Lan_List), "中间语言"),
+                new Attribute(LAN_END, Lan_End, "结束语言"),
+
+                new Attribute(LAN_END, ExecuteTimes.ToString(), "翻译次数(含结束语言)"),
+                new Attribute(LAN_END, Interval.ToString(), "翻译间隔(毫秒)"),
+                new Attribute(LAN_END, UseRandom.ToString(), "是否随机")
+            };
+            Tools.SaveParamsToFile(FilePath, attributes);
+        }
+        /// <summary>
+        /// 输出语言列表
+        /// </summary>
+        /// <param name="start">起始语言</param>
+        /// <param name="list">中间语言</param>
+        /// <param name="end">结束语言</param>
+        protected static void PrintLanListOptionStr(string start, List<string> list, string end, Dictionary<string, string> languages)
+        {
+            Console.Write($"\n起始语言 = "); Language.Print(start, languages);
+            Console.Write($"\n中间语言 = ");
+            for (int i = 0; i < list.Count; i++)
+            {
+                Language.Print(list.ElementAt(i), languages);
+                if (i < list.Count - 1) { Console.Write(", "); }
+            }
+            Console.Write("\n结束语言 = "); Language.Print(end, languages);
+        }
     }
 }

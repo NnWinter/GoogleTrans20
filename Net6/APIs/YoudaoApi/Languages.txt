@@ -1,7 +1,7 @@
 ﻿ZH_CN, 中文
 EN, 英文
 JA, 日语
-KR, 汉语
+KR, 韩语
 FR, 法语
 RU, 俄语
 SP, 西语

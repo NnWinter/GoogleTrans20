@@ -10,7 +10,6 @@ namespace Net6.APIs.GoogleApi
     class GoogleApiOption : ApiOption
     {
         #region ==== 通用方法 ====
-
         public override string Lan_Start { get; protected set; } = "zh";
         public override List<string> Lan_List { get; protected set; } = new List<string>
         {
@@ -82,27 +81,6 @@ namespace Net6.APIs.GoogleApi
             // 翻译间隔
 
             Console.WriteLine($"翻译次数 = {Interval}ms");
-        }
-        public override void Load()
-        {
-            if (!File.Exists(FilePath)) { Save(); }
-            else
-            {
-                // Tools.LoadParamFromFile();
-            }
-        }
-        public override void Save()
-        {
-            var attributes = new Attribute[] {
-                new Attribute(LAN_START, Lan_Start, "起始语言"),
-                new Attribute(LAN_LIST, Language.LanListToString(Lan_List), "中间语言"),
-                new Attribute(LAN_END, Lan_End, "结束语言"),
-
-                new Attribute(LAN_END, ExecuteTimes.ToString(), "翻译次数(含结束语言)"),
-                new Attribute(LAN_END, Interval.ToString(), "翻译间隔(毫秒)"),
-                new Attribute(LAN_END, UseRandom.ToString(), "是否随机")
-            };
-            Tools.SaveParamsToFile(FilePath, attributes);
         }
 
         #endregion
@@ -204,23 +182,6 @@ namespace Net6.APIs.GoogleApi
             Interval = newInterval;
             Save();
             Console.WriteLine($"\nAPI调用间隔修改成功\n当前间隔为 {Interval}ms");
-        }
-        /// <summary>
-        /// 输出语言列表
-        /// </summary>
-        /// <param name="start">起始语言</param>
-        /// <param name="list">中间语言</param>
-        /// <param name="end">结束语言</param>
-        private static void PrintLanListOptionStr(string start, List<string> list, string end, Dictionary<string, string> languages)
-        {
-            Console.Write($"\n起始语言 = "); Language.Print(start, languages);
-            Console.Write($"\n中间语言 = ");
-            for (int i = 0; i < list.Count; i++)
-            {
-                Language.Print(list.ElementAt(i), languages);
-                if (i < list.Count - 1) { Console.Write(", "); }
-            }
-            Console.Write("\n结束语言 = "); Language.Print(end, languages);
         }
 
         #endregion
