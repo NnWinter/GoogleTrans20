@@ -85,7 +85,6 @@ namespace Net6.APIs.GoogleApi
         }
         public override void Load()
         {
-            throw new NotImplementedException();
             if (!File.Exists(FilePath)) { Save(); }
             else
             {
@@ -94,14 +93,16 @@ namespace Net6.APIs.GoogleApi
         }
         public override void Save()
         {
-            try
-            {
-                // File.WriteAllText(FilePath, );
-            }
-            catch (Exception ex)
-            {
-                Tools.ShowError($"保存设置文件错误\n{FilePath}\n{ex.Message}", true);
-            }
+            var attributes = new Attribute[] {
+                new Attribute(LAN_START, Lan_Start, "起始语言"),
+                new Attribute(LAN_LIST, Language.LanListToString(Lan_List), "中间语言"),
+                new Attribute(LAN_END, Lan_End, "结束语言"),
+
+                new Attribute(LAN_END, ExecuteTimes.ToString(), "翻译次数(含结束语言)"),
+                new Attribute(LAN_END, Interval.ToString(), "翻译间隔(毫秒)"),
+                new Attribute(LAN_END, UseRandom.ToString(), "是否随机")
+            };
+            Tools.SaveParamsToFile(FilePath, attributes);
         }
 
         #endregion

@@ -10,7 +10,7 @@ namespace Net6.APIs.YoudaoApi
     {
         public override string Name { get; init; } = "YoudaoApi";
         public override string ApiUri { get; init; } = "http://fanyi.youdao.com/translate?&doctype=json&type={0}2{1}&i={2}";
-        public override Language[] Languages { get; init; }
+        public override Dictionary<string, string?> Languages { get; init; } = new Dictionary<string, string?>();
         public override string DirectoryPath { get; init; }
         public override ApiOption ApiOption { get; init; }
         public YoudaoAPI()
@@ -22,10 +22,9 @@ namespace Net6.APIs.YoudaoApi
             if (lanTemp == null)
             {
                 Tools.ShowError($"加载 {Name} 的语言列表时发生了 \"语言列表为 null\" 的致命错误[2301301031]", true);
-                // 虽然已经退出了，但是用来消除编译器警告
-                Languages = Array.Empty<Language>(); return;
+                return; // 虽然已经退出了，但是用来消除编译器警告
             }
-            Languages = lanTemp.ToArray();
+            Languages = lanTemp;
         }
         public override string? Translate(string fromLanguage, string toLanguage, string text)
         {
@@ -41,7 +40,7 @@ namespace Net6.APIs.YoudaoApi
                 if (string.IsNullOrWhiteSpace(result))
                 {
                     string eMsg =
-                        $"Youdao 翻译失败。[2301291159] 源语言：{fromLanguage} 目标语言：{toLanguage}\n" +
+                        $"Youdao 翻译失败。[2302010508] 源语言：{fromLanguage} 目标语言：{toLanguage}\n" +
                         $"API 传回了空 数据，应确认是否能正常访问该网站，如 VPN 代理问题，网络连接等\n若问题依旧存在请向作者反馈\n";
                     Tools.ShowError(eMsg, false);
                     return null;
