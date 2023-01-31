@@ -29,48 +29,9 @@ namespace Net6
             if (!File.Exists(OPTIONS_FILE_PATH)) { Save(); }
             else
             {
-                var lines = File.ReadAllLines(OPTIONS_FILE_PATH);
+                ExitStr = Tools.LoadParamFromFile(OPTIONS_FILE_PATH, EXITSTR);
 
-                Func<string, string> GetParamStr = (attribute) =>
-                {
-                    var param = lines.FirstOrDefault(x => x.StartsWith(attribute));
-                    if (param == null)
-                    {
-                        Tools.ShowError(
-                            $"[2301302356]\n" +
-                            $"设置文件中无法找到参数 \"{attribute}\"\n" +
-                            $"检查程序目录下的 \"{OPTIONS_FILE_PATH}\" 文件\n" +
-                            $"如果无法修复问题，可以尝试删除上述文件并重新运行\n" +
-                            $"这将会重置程序的全局设置为默认值\n",
-                            true
-                        );
-                        return "";
-                    }
-                    try
-                    {
-                        // 消除注释
-                        if (param.Contains("//")) { param = param[..param.IndexOf("//")]; }
-                        // 拆分等号
-                        return param[(param.IndexOf('=') + 1)..].Trim();
-                    }
-                    catch (Exception ex)
-                    {
-                        Tools.ShowError(
-                            $"[2301302357]\n" +
-                            $"参数 \"{attribute}\" 格式有误\n" +
-                            $"检查程序目录下的 \"{OPTIONS_FILE_PATH}\" 文件\n" +
-                            $"如果无法修复问题，可以尝试删除上述文件并重新运行\n" +
-                            $"这将会重置程序的全局设置为默认值\n" +
-                            $"错误信息: {ex.Message}",
-                            true
-                        );
-                        return "";
-                    }
-                };
-
-                ExitStr = GetParamStr(EXITSTR);
-
-                var sp = GetParamStr(SHOWPROCESS);
+                var sp = Tools.LoadParamFromFile(OPTIONS_FILE_PATH, SHOWPROCESS);
                 if (bool.TryParse(sp, out bool showprocess)) { ShowProcess = showprocess; }
                 else
                 {
@@ -88,16 +49,12 @@ namespace Net6
         /// </summary>
         public static void Save()
         {
-            string ExitStrStr =
-                "// 结束输入使用的文本\n" +
-                $"{EXITSTR} = {ExitStr}";
-            string ShowProcessStr =
-                "// 是否显示翻译过程\n" +
-                $"{SHOWPROCESS} = {(ShowProcess ? "true" : "false")}";
+            var attributs = new Attribute[] {
+                new Attribute(EXITSTR, ExitStr, "结束输入使用的文本"),
+                new Attribute(SHOWPROCESS, (ShowProcess ? "true" : "false"), "是否显示翻译过程")
+            };
 
-            string str = ExitStrStr + "\n" + ShowProcessStr;
-
-            File.WriteAllText(OPTIONS_FILE_PATH, str);
+            Tools.SaveParamsToFile(OPTIONS_FILE_PATH, attributs);
         }
         /// <summary>
         /// 修改全局设置

@@ -51,13 +51,109 @@ namespace Net6
             return input.ToString();
         }
         /// <summary>
-        /// 从文件中读取特定参数
+        /// 从文件中读取特定参数 (读取失败则会输出提示并退出)
         /// </summary>
         /// <param name="path">文件路径</param>
-        /// <param name="param">参数名</param>
-        public static string? LoadParamFromFile(string path, string param)
+        /// <param name="attribute">参数名</param>
+        /// <returns>参数的值(Value)</returns>
+        public static string LoadParamFromFile(string path, string attribute)
         {
+            var lines = File.ReadAllLines(path);
 
+            var param = lines.FirstOrDefault(x => x.StartsWith(attribute));
+            if (param == null)
+            {
+                ShowError(
+                    $"[2301302356]\n" +
+                    $"设置文件中无法找到参数 \"{attribute}\"\n" +
+                    $"检查程序目录下的 \"{path}\" 文件\n" +
+                    $"如果无法修复问题，可以尝试删除上述文件并重新运行\n" +
+                    $"这将会重置程序的全局设置为默认值\n",
+                    true
+                );
+                return "";
+            }
+            try
+            {
+                // 消除注释
+                if (param.Contains("//")) { param = param[..param.IndexOf("//")]; }
+                // 拆分等号
+                return param[(param.IndexOf('=') + 1)..].Trim();
+            }
+            catch (Exception ex)
+            {
+                ShowError(
+                    $"[2301302357]\n" +
+                    $"参数 \"{attribute}\" 格式有误\n" +
+                    $"检查程序目录下的 \"{path}\" 文件\n" +
+                    $"如果无法修复问题，可以尝试删除上述文件并重新运行\n" +
+                    $"这将会重置程序的全局设置为默认值\n" +
+                    $"错误信息: {ex.Message}",
+                    true
+                );
+                return "";
+            }
+        }
+        /// <summary>
+        /// 保存多个参数到文件 (保存失败时提示并退出)
+        /// </summary>
+        /// <param name="path">文件路径</param>
+        /// <param name="attibutes">参数数组</param>
+        public static void SaveParamsToFile(string path, Attribute[] attibutes)
+        {
+            // 参数转文本
+            var text = new StringBuilder();
+            foreach(Attribute att in attibutes)
+            {
+                if (!string.IsNullOrWhiteSpace(att.Comment)) { text.AppendLine($"// {att.Comment}"); }
+                text.AppendLine($"{att.Arttibute.Trim()} = {att.Value.Trim()}");
+            }
+
+            // 写入文件
+            try
+            {
+                File.WriteAllText(path, text.ToString());
+            }
+            catch(Exception ex)
+            {
+                ShowError(
+                    $"参数保存失败[2301310923]\n" +
+                    $"检查程序目录下的 \"{path}\" 文件\n" +
+                    $"错误信息: {ex.Message}",
+                    true
+                );
+            }
+        }
+    }
+    /// <summary>
+    /// 用于读写文件中参数的结构<br/>
+    /// 虽然其实可以用JSON来做，但是，neh~
+    /// </summary>
+    public class Attribute
+    {
+        /// <summary>
+        /// 参数名
+        /// </summary>
+        public string Arttibute;
+        /// <summary>
+        /// 值
+        /// </summary>
+        public string Value;
+        /// <summary>
+        /// 注释
+        /// </summary>
+        public string? Comment;
+        /// <summary>
+        /// 创建新的参数
+        /// </summary>
+        /// <param name="attribute">参数名</param>
+        /// <param name="value">值</param>
+        /// <param name="comment">注释</param>
+        public Attribute(string attribute, string value, string? comment)
+        {
+            Arttibute = attribute;
+            Value = value;
+            Comment = comment;
         }
     }
     class ConsoleColors
