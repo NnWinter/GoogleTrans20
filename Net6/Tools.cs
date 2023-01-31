@@ -50,6 +50,15 @@ namespace Net6
             }
             return input.ToString();
         }
+        /// <summary>
+        /// 从文件中读取特定参数
+        /// </summary>
+        /// <param name="path">文件路径</param>
+        /// <param name="param">参数名</param>
+        public static string? LoadParamFromFile(string path, string param)
+        {
+
+        }
     }
     class ConsoleColors
     {

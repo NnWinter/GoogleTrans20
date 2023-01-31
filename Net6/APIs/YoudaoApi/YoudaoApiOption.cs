@@ -24,17 +24,22 @@ namespace Net6.APIs.YoudaoApi
             Api = api;
             FilePath = Api.DirectoryPath + @"\Config.txt";
         }
-
+        public override void Load()
+        {
+            throw new NotImplementedException();
+        }
         private void ChangeLanguageList()
         {
-
+            throw new NotImplementedException();
         }
         private void ChangeExecuteTimes()
         {
-
+            throw new NotImplementedException();
         }
         private void ChangeInterval()
         {
+            throw new NotImplementedException();
+
             Console.Write(
                 $"\n当前调用API的间隔时间为 {Interval}ms\n" +
                 $"输入新的间隔 [ms] (短间隔频繁调用API可能导致冷却)\n\n"

@@ -49,6 +49,10 @@ namespace Net6
         /// </summary>
         public abstract void Print();
         /// <summary>
+        /// 从文件中加载设置
+        /// </summary>
+        public abstract void Load();
+        /// <summary>
         /// 保存设置到文件
         /// </summary>
         public abstract void Save();

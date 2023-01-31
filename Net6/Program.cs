@@ -7,10 +7,6 @@ using System.Text;
 GlobalOptions.Load();           // 一定要预加载全剧设定
 ConsoleColors.ResetDefault();   // 多次重复运行调试器可能会导致颜色不还原
 
-
-//Test.TestAPIs();
-
-
 Stage stage = Stage.MAIN;   // 菜单
 API? api = null;            // API
 var mainLoop = true;        // 循环flag
@@ -28,8 +24,9 @@ while (mainLoop)
                 "\n==== 主菜单 ====\n\n" +
                 " 选择API:\n" +
                 $"  [1] Google API (谷歌翻译)\n" +
-                $"  [2] Youdao API (有道翻译)\n" +
-                $"  [3] 修改全局设置 (终止文本等)\n\n"
+                $"  [2] Youdao API (有道翻译) [开发中]\n" +
+                $"  [3] 修改全局设置 (终止文本等)\n\n" +
+                $"  [0] 退出程序 ( 直接关掉√ )\n\n"
                 );
                 var apiSelection = ConsoleColors.ReadLineWithTempColors();
 
@@ -76,6 +73,7 @@ while (mainLoop)
                 if (api == null) { Tools.ShowError("无效的API[2301301937]", false); stage = Stage.MAIN; continue; }
 
                 // 显示API信息
+                Console.WriteLine();
                 api.ApiOption.Print();
 
                 // 显示全局信息
@@ -86,14 +84,19 @@ while (mainLoop)
                 var input = Tools.ReadLines();
                 if (input == null) { Tools.ShowError("输入的内容为 Null [2301302224]", false); stage = Stage.API_MENU; continue; }
 
+                Console.WriteLine("\n---- 翻译信息 ----");
                 var result = api.TranslateByConfig(input);
+
+                Console.WriteLine("\n---- 翻译结果 ----\n\n");
+                Console.WriteLine(result);
 
                 stage = Stage.API_MENU;
                 break;
             }
+        // 怎么会跑到这呢？Bug！一定是Bug!
+        case Stage.NULL:
+        default: { Tools.ShowError("错误的程序状态[2301310752]", true); break; }
     }
-    Thread.Sleep(1000); // DEBUG
-    Console.WriteLine("无限循环中");
 }
 
 Console.WriteLine();

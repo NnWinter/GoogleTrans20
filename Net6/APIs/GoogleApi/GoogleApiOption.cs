@@ -83,16 +83,31 @@ namespace Net6.APIs.GoogleApi
 
             Console.WriteLine($"翻译次数 = {Interval}ms");
         }
+        public override void Load()
+        {
+            if (!File.Exists(FilePath)) { Save(); }
+            else
+            {
+                try
+                {
+
+                }
+                catch (Exception ex)
+                {
+                    Tools.ShowError($"加载设置文件错误\n{FilePath}\n{ex.Message}", true);
+                }
+            }
+        }
         public override void Save()
         {
-            //try
-            //{
-            //    File.WriteAllText(FilePath, );
-            //}
-            //catch(Exception ex)
-            //{
-            //    Tools.ShowError($"保存设置文件错误\n{FilePath}\n{ex.Message}", true);
-            //}
+            try
+            {
+                // File.WriteAllText(FilePath, );
+            }
+            catch (Exception ex)
+            {
+                Tools.ShowError($"保存设置文件错误\n{FilePath}\n{ex.Message}", true);
+            }
         }
 
         #endregion

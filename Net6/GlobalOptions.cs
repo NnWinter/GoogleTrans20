@@ -121,6 +121,7 @@ namespace Net6
                     case "0": return;
                     case "1": ChangeExitStr(); break;
                     case "2": ShowProcess = !ShowProcess; break;
+                    default: Tools.ShowError("无效的选择[2301310803]", false); continue;
                 }
 
                 // 保存修改

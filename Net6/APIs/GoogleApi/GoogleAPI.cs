@@ -110,7 +110,7 @@ namespace Net6.APIs.GoogleApi
                 lan_list.Enqueue(ApiOption.Lan_End);
 #if DEBUG
                 var lans = lan_list.ToArray();
-                foreach(var l in lans){ l.Print(); Console.Write(","); }
+                foreach (var l in lans) { l.Print(); Console.Write(","); }
 #endif
                 return TranslateByLanQueue(lan_list, text);
             }
@@ -146,15 +146,20 @@ namespace Net6.APIs.GoogleApi
         {
             Language prev = queue.Dequeue();
             Language? next;
+            int count = 1;
+            AppendProcessToFile(text, true);// 保存原文到本地过程
             while (queue.TryDequeue(out next))
             {
                 var text_temp = Translate(prev.ShortName, next.ShortName, text);
                 if (string.IsNullOrEmpty(text_temp)) { Tools.ShowError($"{Name} 翻译文本时返回了空文本[2301301124]\n源语言 = {prev.ShortName}, 目标语言 = {next.ShortName}", false); return null; }
                 text = text_temp;
+                AppendProcessToFile(text);// 保存过程到本地
                 prev = next;
                 if (GlobalOptions.ShowProcess) { Console.WriteLine("\n---- 翻译过程 ----\n" + text); } // 是否显示翻译过程
+                else { Console.Write($"第 {count++} 次... "); }
                 Thread.Sleep(ApiOption.Interval);
             }
+            AppendResultToFile(text);// 保存结果到本地
             return text;
         }
     }
