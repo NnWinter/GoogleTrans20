@@ -73,7 +73,7 @@ namespace Net6.APIs.GoogleApi
             // 语言列表
 
             if (UseRandom) { Console.WriteLine("语言列表 = 随机"); }
-            else { Console.Write("语言列表 = "); PrintLanListOptionStr(Lan_Start, Lan_List, Lan_End); Console.WriteLine(); }
+            else { Console.Write("语言列表 = "); PrintLanListOptionStr(Lan_Start, Lan_List, Lan_End, Api.Languages); Console.WriteLine(); }
 
             // 翻译次数
 
@@ -85,10 +85,11 @@ namespace Net6.APIs.GoogleApi
         }
         public override void Load()
         {
+            throw new NotImplementedException();
             if (!File.Exists(FilePath)) { Save(); }
             else
             {
-                Tools.LoadParamFromFile();
+                // Tools.LoadParamFromFile();
             }
         }
         public override void Save()
@@ -122,32 +123,32 @@ namespace Net6.APIs.GoogleApi
         {
             // 输出当前语言列表
 
-            PrintLanListOptionStr(Lan_Start, Lan_List, Lan_End, Language);
+            PrintLanListOptionStr(Lan_Start, Lan_List, Lan_End, Api.Languages);
 
             // 输入新语言列表
 
             Console.Write("\n\n输入要指定的起始语言：");
             var input = ConsoleColors.ReadLineWithTempColors(); if (input == null) { Tools.ShowError("无效的输入[2301300826]", false); return; }
-            var lan_start = GetLan(input.Trim());
+            var lan_start = input.Trim();
 
             Console.Write("\n输入要指定的中间语言，以英文逗号分割：");
             input = ConsoleColors.ReadLineWithTempColors(); if (input == null) { Tools.ShowError("无效的输入[2301300838]", false); return; }
             var lan_list_strs = input.Split(',').Select(x => x.Trim());
-            var lan_list = new List<Language>();
+            var lan_list = new List<string>();
             foreach (var lan_str in lan_list_strs)
             {
-                var lan = GetLan(lan_str.Trim());
+                var lan = lan_str.Trim();
                 lan_list.Add(lan);
             }
 
             Console.Write("\n输入要指定的结束语言：");
             input = ConsoleColors.ReadLineWithTempColors(); if (input == null) { Tools.ShowError("无效的输入[2301300842]", false); return; }
-            var lan_end = GetLan(input.Trim());
+            var lan_end = input.Trim();
 
             // 显示预览
 
             Console.WriteLine("修改预览：");
-            PrintLanListOptionStr(lan_start, lan_list, lan_end);
+            PrintLanListOptionStr(lan_start, lan_list, lan_end, Api.Languages);
 
             // 确认修改
 
@@ -209,16 +210,16 @@ namespace Net6.APIs.GoogleApi
         /// <param name="start">起始语言</param>
         /// <param name="list">中间语言</param>
         /// <param name="end">结束语言</param>
-        private static void PrintLanListOptionStr(string start, List<string> list, string end)
+        private static void PrintLanListOptionStr(string start, List<string> list, string end, Dictionary<string, string> languages)
         {
-            Console.Write("\n起始语言 = "); start.Print();
-            Console.Write("\n中间语言 = ");
+            Console.Write($"\n起始语言 = "); Language.Print(start, languages);
+            Console.Write($"\n中间语言 = ");
             for (int i = 0; i < list.Count; i++)
             {
-                list.ElementAt(i).Print();
+                Language.Print(list.ElementAt(i), languages);
                 if (i < list.Count - 1) { Console.Write(", "); }
             }
-            Console.Write("\n结束语言 = "); end.Print();
+            Console.Write("\n结束语言 = "); Language.Print(end, languages);
         }
 
         #endregion

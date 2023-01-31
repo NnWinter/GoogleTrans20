@@ -87,10 +87,6 @@ namespace Net6
             }
             return lanstr.ToString();
         }
-        public override string ToString()
-        {
-            return $"({ShortName}|{(FullName == null ? "" : FullName)})";
-        }
         /// <summary>
         /// 按照预设颜色和格式输出短文本以说明本语言<br />
         /// (不含换行)
@@ -104,9 +100,27 @@ namespace Net6
                 ConsoleColors.WriteWithTempColors($"({FullName})", ConsoleColor.DarkGray, ConsoleColor.Black);
             }
         }
-        public static void Print(string language)
+        /// <summary>
+        /// 含颜色的输出语言功能
+        /// </summary>
+        /// <param name="language">缩写</param>
+        /// <param name="fullname">语言全名</param>
+        public static void Print(string language, string? fullname)
         {
-            throw new NotImplementedException();
+            Console.Write(language);
+            if (fullname != null)
+            {
+                ConsoleColors.WriteWithTempColors($"({fullname})", ConsoleColor.DarkGray, ConsoleColor.Black);
+            }
+        }
+        /// <summary>
+        /// 含颜色的输出语言功能(含查找)
+        /// </summary>
+        /// <param name="language">要输出的语言</param>
+        /// <param name="languages">查找语言的列表</param>
+        public static void Print(string language, Dictionary<string, string> languages)
+        {
+            Print(language, GetLanguageFullname(language, languages));
         }
         /// <summary>
         /// 从语言列表中查找语言缩写并返回对应的语言<br/>

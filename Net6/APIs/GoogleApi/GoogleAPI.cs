@@ -92,34 +92,43 @@ namespace Net6.APIs.GoogleApi
             {
                 // 创建随机语言列表
                 var random = new Random((int)(DateTime.Now.Ticks % int.MaxValue));
-
+                // 将字典转换为数组以进行随机
+                var dicArray = Languages.ToArray();
+                
+                // 列表添加起始语言
                 var lan_list = new Queue<string>();
                 lan_list.Enqueue(ApiOption.Lan_Start);
                 var count = 0;
 
+                // 列表添加中间语言
                 var prev_index = -1; // 用于记录上一个语言的序号，避免重复
                 while (count < ApiOption.ExecuteTimes - 1)
                 {
-                    var index = random.Next() % Languages.Length;
+                    var index = random.Next() % dicArray.Length;
                     if (index == prev_index) { continue; }
-                    lan_list.Enqueue(Languages[index].ShortName);
+                    lan_list.Enqueue(dicArray[index].Key);
                     count++;
                 }
 
+                // 列表添加结尾语言
                 lan_list.Enqueue(ApiOption.Lan_End);
-#if DEBUG
+
+                // 显示随机翻译的语言顺序
+                Console.WriteLine("随机翻译语言顺序: ");
                 var lans = lan_list.ToArray();
-                foreach (var l in lans) { l.Print(); Console.Write(","); }
-#endif
+                for (int i = 0; i < lans.Length; i++) { Language.Print(lans[i], Languages); if (i != lans.Length - 1) { Console.Write(", "); } }
+
+                // 翻译并返回结果
                 return TranslateByLanQueue(lan_list, text);
             }
             else
             {
-                var lan_list = new Queue<Language>();
+                // 列表添加起始语言
+                var lan_list = new Queue<string>();
                 lan_list.Enqueue(ApiOption.Lan_Start);
                 var count = 0;
 
-                var prev = ApiOption.Lan_Start;
+                // 列表添加中间语言
                 var lan_array = ApiOption.Lan_List.ToArray();
                 while (count < ApiOption.ExecuteTimes - 1)
                 {
@@ -127,11 +136,10 @@ namespace Net6.APIs.GoogleApi
                     count++;
                 }
 
+                // 列表添加结尾语言
                 lan_list.Enqueue(ApiOption.Lan_End);
-#if DEBUG
-                var lans = lan_list.ToArray();
-                foreach (var l in lans) { l.Print(); Console.Write(","); }
-#endif
+
+                // 翻译并返回结果
                 return TranslateByLanQueue(lan_list, text);
             }
         }
@@ -141,16 +149,16 @@ namespace Net6.APIs.GoogleApi
         /// <param name="queue">语言队列</param>
         /// <param name="text">要翻译的文本</param>
         /// <returns></returns>
-        private string? TranslateByLanQueue(Queue<Language> queue, string text)
+        private string? TranslateByLanQueue(Queue<string> queue, string text)
         {
-            Language prev = queue.Dequeue();
-            Language? next;
+            string prev = queue.Dequeue();
+            string? next;
             int count = 1;
             AppendProcessToFile(text, true);// 保存原文到本地过程
             while (queue.TryDequeue(out next))
             {
-                var text_temp = Translate(prev.ShortName, next.ShortName, text);
-                if (string.IsNullOrEmpty(text_temp)) { Tools.ShowError($"{Name} 翻译文本时返回了空文本[2301301124]\n源语言 = {prev.ShortName}, 目标语言 = {next.ShortName}", false); return null; }
+                var text_temp = Translate(prev, next, text);
+                if (string.IsNullOrEmpty(text_temp)) { Tools.ShowError($"{Name} 翻译文本时返回了空文本[2301301124]\n源语言 = {prev}, 目标语言 = {next}", false); return null; }
                 text = text_temp;
                 AppendProcessToFile(text);// 保存过程到本地
                 prev = next;
