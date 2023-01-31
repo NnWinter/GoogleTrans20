@@ -118,7 +118,7 @@ namespace Net6
         /// </summary>
         /// <param name="language">要输出的语言</param>
         /// <param name="languages">查找语言的列表</param>
-        public static void Print(string language, Dictionary<string, string> languages)
+        public static void Print(string language, Dictionary<string, string?> languages)
         {
             Print(language, GetLanguageFullname(language, languages));
         }
@@ -129,12 +129,12 @@ namespace Net6
         /// <param name="language">要查找的语言</param>
         /// <param name="languages">语言列表</param>
         /// <returns>找到/创建的语言</returns>
-        public static string? GetLanguageFullname(string language, Dictionary<string, string> languages)
+        public static string? GetLanguageFullname(string language, Dictionary<string, string?> languages)
         {
             bool success = languages.TryGetValue(language, out string? lan);
-            if (!success || lan == null)
+            if (!success)
             {
-                Tools.ShowWarning($"语言 {language} 不存在于 Languages.txt，请注意 API 是否支持该语言");
+                Tools.ShowWarning($"\n语言 {language} 不存在于 Languages.txt，请注意 API 是否支持该语言\n");
             }
             return lan;
         }

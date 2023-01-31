@@ -11,7 +11,7 @@ namespace Net6.APIs.YoudaoApi
         #region ==== 通用方法 ====
 
         public override string Lan_Start { get; protected set; } = "ZH_CN";
-        public override List<string> Lan_List { get; protected set; } = new List<string> 
+        public override List<string> Lan_List { get; protected set; } = new List<string>
         { 
             // Youdao API 官方说明中，只支持其它几个语言和中文进行转换，
             // 不支持像 JA -> RU 这种转换，需要 JA -> ZH_CH -> RU 替代
@@ -60,11 +60,11 @@ namespace Net6.APIs.YoudaoApi
 
                 switch (input.Trim())
                 {
-                    case "0": loopFlag = false; continue;
+                    case "0": loopFlag = false; Save(); continue; // 修改完要保存，嗯？
                     case "1": ChangeLanguageList(); continue;
                     case "2": ChangeExecuteTimes(); continue;
                     case "3": ChangeInterval(); continue;
-                    case "4": UseRandom = !UseRandom; continue;
+                    case "4": UseRandom = !UseRandom; Save(); continue; // 修改完要保存，嗯？
                     default: Tools.ShowError("无效的选择[2302010533]", false); continue;
                 }
             }
@@ -99,6 +99,7 @@ namespace Net6.APIs.YoudaoApi
         {
             Api = api;
             FilePath = Api.DirectoryPath + @"\Config.txt";
+            Load(); // 从文件加载API设置
         }
 
         #endregion

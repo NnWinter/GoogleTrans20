@@ -62,7 +62,26 @@ namespace Net6
             if (!File.Exists(FilePath)) { Save(); }
             else
             {
-                // Tools.LoadParamFromFile();
+                try
+                {
+                    Lan_Start = Tools.LoadParamFromFile(FilePath, LAN_START);
+
+                    var lans = Tools.LoadParamFromFile(FilePath, LAN_LIST).Split(',');
+                    if (lans == null) { Tools.ShowError($"加载 {Api.Name} 的语言列表时出现了错误[2302010609]", true); return; }
+                    Lan_List = lans.Select(x=>x.Trim()).ToList();
+
+                    Lan_End = Tools.LoadParamFromFile(FilePath, LAN_END);
+
+                    ExecuteTimes = int.Parse(Tools.LoadParamFromFile(FilePath, EXECUTE_TIMES));
+
+                    Interval = int.Parse(Tools.LoadParamFromFile(FilePath, INTERVAL));
+
+                    UseRandom = bool.Parse(Tools.LoadParamFromFile(FilePath, USERANDOM));
+                }
+                catch(Exception ex) 
+                {
+                    Tools.ShowError($"加载 {Api.Name} 的设置时出现了错误[2302010605]\n{ex.Message}", true);
+                }
             }
         }
         /// <summary>
@@ -76,9 +95,9 @@ namespace Net6
                 new Attribute(LAN_LIST, Language.LanListToString(Lan_List), "中间语言"),
                 new Attribute(LAN_END, Lan_End, "结束语言"),
 
-                new Attribute(LAN_END, ExecuteTimes.ToString(), "翻译次数(含结束语言)"),
-                new Attribute(LAN_END, Interval.ToString(), "翻译间隔(毫秒)"),
-                new Attribute(LAN_END, UseRandom.ToString(), "是否随机")
+                new Attribute(EXECUTE_TIMES, ExecuteTimes.ToString(), "翻译次数(含结束语言)"),
+                new Attribute(INTERVAL, Interval.ToString(), "翻译间隔(毫秒)"),
+                new Attribute(USERANDOM, UseRandom.ToString(), "是否随机")
             };
             Tools.SaveParamsToFile(FilePath, attributes);
         }

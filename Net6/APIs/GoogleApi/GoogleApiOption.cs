@@ -55,11 +55,11 @@ namespace Net6.APIs.GoogleApi
 
                 switch (input.Trim())
                 {
-                    case "0": loopFlag = false; continue;
+                    case "0": loopFlag = false; Save(); continue; // 修改完要保存，嗯？
                     case "1": ChangeLanguageList(); continue;
                     case "2": ChangeExecuteTimes(); continue;
                     case "3": ChangeInterval(); continue;
-                    case "4": UseRandom = !UseRandom; continue;
+                    case "4": UseRandom = !UseRandom; Save(); continue; // 修改完要保存，嗯？
                     default: Tools.ShowError("无效的选择[2301292019]", false); continue;
                 }
             }
@@ -73,7 +73,7 @@ namespace Net6.APIs.GoogleApi
             // 语言列表
 
             if (UseRandom) { Console.WriteLine("语言列表 = 随机"); }
-            else { Console.Write("语言列表 = "); PrintLanListOptionStr(Lan_Start, Lan_List, Lan_End, Api.Languages); Console.WriteLine(); }
+            else { PrintLanListOptionStr(Lan_Start, Lan_List, Lan_End, Api.Languages); Console.WriteLine(); }
 
             // 翻译次数
 
@@ -91,6 +91,7 @@ namespace Net6.APIs.GoogleApi
         {
             Api = api;
             FilePath = Api.DirectoryPath + @"\Config.txt";
+            Load(); // 从文件加载API设置
         }
 
         #endregion
