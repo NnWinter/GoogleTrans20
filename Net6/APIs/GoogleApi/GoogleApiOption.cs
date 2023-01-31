@@ -11,16 +11,16 @@ namespace Net6.APIs.GoogleApi
     {
         #region ==== 通用方法 ====
 
-        public override Language Lan_Start { get; protected set; } = new Language("zh", "简体中文");
-        public override List<Language> Lan_List { get; protected set; } = new List<Language>
+        public override string Lan_Start { get; protected set; } = "zh";
+        public override List<string> Lan_List { get; protected set; } = new List<string>
         {
-            new Language("af", null),
-            new Language("cs", null),
-            new Language("ja", "日文"),
-            new Language("fr", "法语"),
-            new Language("kn", null)
+            "af",
+            "cs",
+            "ja",
+            "fr",
+            "kn"
         };
-        public override Language Lan_End { get; protected set; } = new Language("zh", "简体中文");
+        public override string Lan_End { get; protected set; } = "zh";
         public override int ExecuteTimes { get; protected set; } = 10;
         public override int Interval { get; protected set; } = 2000;
         public override bool UseRandom { get; protected set; } = true;
@@ -88,14 +88,7 @@ namespace Net6.APIs.GoogleApi
             if (!File.Exists(FilePath)) { Save(); }
             else
             {
-                try
-                {
-
-                }
-                catch (Exception ex)
-                {
-                    Tools.ShowError($"加载设置文件错误\n{FilePath}\n{ex.Message}", true);
-                }
+                Tools.LoadParamFromFile();
             }
         }
         public override void Save()

@@ -30,7 +30,7 @@ namespace Net6
         /// <summary>
         /// 记录 API 中的语言列表
         /// </summary>
-        public abstract Language[] Languages { get; init; }
+        public abstract Dictionary<string,Language> Languages { get; init; }
         /// <summary>
         /// 储存 API 的设置
         /// </summary>

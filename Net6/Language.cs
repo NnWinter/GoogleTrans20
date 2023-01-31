@@ -74,6 +74,7 @@ namespace Net6
         /// </summary>
         /// <param name="languages">语言列表</param>
         /// <returns>文本化的语言列表</returns>
+        [Obsolete]
         public static string LanguageListSt(List<Language> languages)
         {
             var lanstr = new StringBuilder();
@@ -88,12 +89,13 @@ namespace Net6
         }
         public override string ToString()
         {
-            return $"缩写: {ShortName}, 全称: {(FullName == null ? "" : FullName)}";
+            return $"({ShortName}|{(FullName == null ? "" : FullName)})";
         }
         /// <summary>
         /// 按照预设颜色和格式输出短文本以说明本语言<br />
         /// (不含换行)
         /// </summary>
+        [Obsolete]
         public void Print()
         {
             Console.Write(ShortName);
@@ -101,6 +103,14 @@ namespace Net6
             {
                 ConsoleColors.WriteWithTempColors($"({FullName})", ConsoleColor.DarkGray, ConsoleColor.Black);
             }
+        }
+        public static void Print(string language)
+        {
+
+        }
+        public static Language GetLanguage(string language, Language[] languages)
+        {
+
         }
     }
 }

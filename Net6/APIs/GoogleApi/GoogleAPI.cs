@@ -94,7 +94,7 @@ namespace Net6.APIs.GoogleApi
                 // 创建随机语言列表
                 var random = new Random((int)(DateTime.Now.Ticks % int.MaxValue));
 
-                var lan_list = new Queue<Language>();
+                var lan_list = new Queue<string>();
                 lan_list.Enqueue(ApiOption.Lan_Start);
                 var count = 0;
 
@@ -103,7 +103,7 @@ namespace Net6.APIs.GoogleApi
                 {
                     var index = random.Next() % Languages.Length;
                     if (index == prev_index) { continue; }
-                    lan_list.Enqueue(Languages[index]);
+                    lan_list.Enqueue(Languages[index].ShortName);
                     count++;
                 }
 

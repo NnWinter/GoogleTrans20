@@ -11,27 +11,33 @@ namespace Net6
         /// <summary>
         /// 起始语言 (翻译前文本的语言)
         /// </summary>
-        public abstract Language Lan_Start { get; protected set; }
+        public abstract string Lan_Start { get; protected set; }
+        public const string LAN_START = "Lan_Start";
         /// <summary>
         /// 用于进行翻译的中间语言列表 (可以不含起始和结尾)
         /// </summary>
-        public abstract List<Language> Lan_List { get; protected set; }
+        public abstract List<string> Lan_List { get; protected set; }
+        public const string LAN_LIST = "Lan_List";
         /// <summary>
         /// 结束语言 (翻译全部完成后应为本语言)
         /// </summary>
-        public abstract Language Lan_End { get; protected set; }
+        public abstract string Lan_End { get; protected set; }
+        public const string LAN_END = "Lan_End";
         /// <summary>
         /// 翻译的次数 ( 如果是 4 个语言，则次数为 3 )
         /// </summary>
         public abstract int ExecuteTimes { get; protected set; }
+        public const string EXECUTE_TIMES = "ExecuteTimes";
         /// <summary>
         /// 调用 API 的等待间隔 ( 防止调用速度过快导致IP冷却 )
         /// </summary>
         public abstract int Interval { get; protected set; }
+        public const string INTERVAL = "Interval";
         /// <summary>
         /// 是否使用随机语言
         /// </summary>
         public abstract bool UseRandom { get; protected set; }
+        public const string USERANDOM = "UseRandom";
         /// <summary>
         /// 所属的API (用于获取语言列表等)
         /// </summary>
@@ -56,5 +62,18 @@ namespace Net6
         /// 保存设置到文件
         /// </summary>
         public abstract void Save();
+        /// <summary>
+        /// 将语言列表转换为字符串
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        protected static string LanListToString(List<Language> list)
+        {
+
+        }
+        protected List<Language> LanListFromString(string list) 
+        { 
+
+        }
     }
 }
