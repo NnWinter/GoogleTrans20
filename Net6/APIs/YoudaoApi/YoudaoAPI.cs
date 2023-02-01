@@ -13,6 +13,7 @@ namespace Net6.APIs.YoudaoApi
     public class YoudaoAPI : API
     {
         public override string Name { get; init; } = "YoudaoApi";
+        // http://fanyi.youdao.com/translate?&doctype=json&from=en&to=ja&i=%E4%BD%A0%E5%A5%BD
         public override string ApiUri { get; init; } = "http://fanyi.youdao.com/translate?&doctype=json&type={0}2{1}&i={2}";
         public override Dictionary<string, string?> Languages { get; init; } = new Dictionary<string, string?>();
         public override string DirectoryPath { get; init; }
