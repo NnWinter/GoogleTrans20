@@ -155,6 +155,7 @@ namespace Net6.APIs.GoogleApi
             string? next;
             int count = 1;
             AppendProcessToFile(text, true);// 保存原文到本地过程
+            Console.WriteLine();
             while (queue.TryDequeue(out next))
             {
                 var text_temp = Translate(prev, next, text);
@@ -162,7 +163,7 @@ namespace Net6.APIs.GoogleApi
                 text = text_temp;
                 AppendProcessToFile(text);// 保存过程到本地
                 prev = next;
-                if (GlobalOptions.ShowProcess) { Console.WriteLine("\n---- 翻译过程 ----\n" + text); } // 是否显示翻译过程
+                if (GlobalOptions.ShowProcess) { Console.WriteLine("---- 翻译过程 ----\n" + text); } // 是否显示翻译过程
                 else { Console.Write($"第 {count++} 次... "); }
                 Thread.Sleep(ApiOption.Interval);
             }
