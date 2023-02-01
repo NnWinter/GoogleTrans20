@@ -59,7 +59,12 @@ namespace Net6.APIs.GoogleApi
                         var jsonData = (JArray?)JsonConvert.DeserializeObject(json);
 
 #pragma warning disable CS8602, CS8604 // ↓↓↓ 这里可能会有 null，抛异常就行了，不用管警告
-                        return jsonData[0][0][0].ToString();
+                        var lines = jsonData[0];
+                        var result = new StringBuilder();
+                        foreach (var line in lines) {
+                            result.Append(line[0].ToString()); // 这里似乎自带换行符，如果用AppendLine会导致多次换行
+                        }
+                        return result.ToString();
 #pragma warning restore CS8602, CS8604 // ↑↑↑
 
                     }
@@ -114,9 +119,10 @@ namespace Net6.APIs.GoogleApi
                 lan_list.Enqueue(ApiOption.Lan_End);
 
                 // 显示随机翻译的语言顺序
-                Console.WriteLine("随机翻译语言顺序: ");
+                Console.Write("随机翻译语言顺序: ");
                 var lans = lan_list.ToArray();
                 for (int i = 0; i < lans.Length; i++) { Language.Print(lans[i], Languages); if (i != lans.Length - 1) { Console.Write(", "); } }
+                Console.WriteLine();
 
                 // 翻译并返回结果
                 return TranslateByLanQueue(lan_list, text);
@@ -155,7 +161,6 @@ namespace Net6.APIs.GoogleApi
             string? next;
             int count = 1;
             AppendProcessToFile(text, true);// 保存原文到本地过程
-            Console.WriteLine();
             while (queue.TryDequeue(out next))
             {
                 var text_temp = Translate(prev, next, text);

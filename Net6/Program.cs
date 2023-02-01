@@ -80,11 +80,11 @@ while (mainLoop)
                 GlobalOptions.Print();
 
                 // 用户输入
-                Console.WriteLine("\n---- 输入要翻译的文本 ----");
+                Console.WriteLine("\n---- 输入要翻译的文本 ----\n");
                 var input = Tools.ReadLines();
                 if (input == null) { Tools.ShowError("输入的内容为 Null [2301302224]", false); stage = Stage.API_MENU; continue; }
 
-                Console.WriteLine("\n---- 翻译信息 ----");
+                Console.WriteLine("\n---- 翻译信息 ----\n");
                 var result = api.TranslateByConfig(input);
 
                 Console.WriteLine("\n---- 翻译结果 ----\n");
