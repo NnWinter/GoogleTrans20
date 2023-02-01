@@ -59,10 +59,11 @@ namespace Net6.APIs.YoudaoApi
 
 #pragma warning disable CS8602, CS8604 // ↓↓↓ 这里可能会有 null，抛异常就行了，不用管警告
                         var lines = jsonData["translateResult"].ToArray();
+                        CheckErrorCode(jsonData["errorCode"].ToString());
                         var result = new StringBuilder();
                         foreach (var line in lines)
                         {
-                            result.Append(line[0]["tgt"].ToString()); 
+                            result.AppendLine(line[0]["tgt"].ToString()); //有道API是需要去掉换行符的 
                         }
                         return result.ToString();
 #pragma warning restore CS8602, CS8604 // ↑↑↑
@@ -214,6 +215,19 @@ namespace Net6.APIs.YoudaoApi
             }
             AppendResultToFile(text);// 保存结果到本地
             return text;
+        }
+        private void CheckErrorCode(string code)
+        {
+            switch(code.Trim())
+            {
+                case "0": return;
+                case "20": Tools.ShowWarning($"API错误代码 {code}: 要翻译的文本过长\n"); return;
+                case "30": Tools.ShowWarning($"API错误代码 {code}: 无法进行有效的翻译\n"); return;
+                case "40": Tools.ShowWarning($"API错误代码 {code}: 不支持的语言类型\n"); return;
+                case "50": Tools.ShowWarning($"API错误代码 {code}: 无效的key\n"); return;
+                case "60": Tools.ShowWarning($"API错误代码 {code}: 无词典结果，仅在获取词典结果生效\n"); return;
+                default: Tools.ShowWarning($"API错误代码 {code}: 未知的错误代码，可前往API官网查询\n"); return;
+            }
         }
     }
 }
