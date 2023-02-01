@@ -87,7 +87,7 @@ while (mainLoop)
                 Console.WriteLine("\n---- 翻译信息 ----");
                 var result = api.TranslateByConfig(input);
 
-                Console.WriteLine("\n---- 翻译结果 ----");
+                Console.WriteLine("\n---- 翻译结果 ----\n");
                 Console.WriteLine(result);
 
                 stage = Stage.API_MENU;
