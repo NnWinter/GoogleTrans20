@@ -1,22 +1,20 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Edge;
-using OpenQA.Selenium.Firefox;
+﻿using PuppeteerSharp;
 
-var edge = new FirefoxDriver();
-try
+using var browserFetcher = new BrowserFetcher();
+await browserFetcher.DownloadAsync(BrowserFetcher.DefaultChromiumRevision);
+var browser = await Puppeteer.LaunchAsync(new LaunchOptions
 {
-    edge.Url = "https://fanyi.youdao.com/index.html";
-    var input = edge.FindElement(By.Id("js_fanyi_input"));
-    input.SendKeys("你好");
+    Headless = true
+});
+var page = await browser.NewPageAsync();
+await page.GoToAsync("https://fanyi.youdao.com/index.html");
 
-    Thread.Sleep(1000);
+await page.Keyboard.SendCharacterAsync("啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊");
 
-    var output = edge.FindElement(By.Id("js_fanyi_output"));
+Thread.Sleep(2000);
 
-    string str = output.Text;
-    Console.WriteLine(str);
-}
-finally
-{
-    edge.Quit();
-}
+var content = await page.GetContentAsync();
+
+Console.WriteLine(content);
+
+Console.ReadLine();
