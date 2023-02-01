@@ -1,7 +1,8 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Edge;
+using OpenQA.Selenium.Firefox;
 
-var edge = new EdgeDriver();
+var edge = new FirefoxDriver();
 try
 {
     edge.Url = "https://fanyi.youdao.com/index.html";

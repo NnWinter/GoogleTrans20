@@ -11,6 +11,7 @@
   <ItemGroup>
     <PackageReference Include="EO.WebBrowser" Version="23.0.83" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Selenium.Firefox.WebDriver" Version="0.27.0" />
     <PackageReference Include="Selenium.WebDriver" Version="4.8.0" />
     <PackageReference Include="Terminal.Gui" Version="1.9.0" />
   </ItemGroup>
