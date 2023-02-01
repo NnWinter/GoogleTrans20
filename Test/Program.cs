@@ -1,72 +1,21 @@
-﻿using EO.WebBrowser;
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Edge;
 
-//Thread th = new Thread(
-//() => {
-//    Form f1 = new Form();
-//    WebBrowser web = new WebBrowser();
-//    web.ScriptErrorsSuppressed = true;
-//    f1.SetBounds(0, 0, 500, 500);
-//    f1.Controls.Add(web);
-//    web.Size = f1.ClientSize;
-//    web.Navigate("http://www.google.com");
-//    web.Refresh();
-//    web.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler((sender, e) =>
-//    {
-//        if (web.ReadyState == WebBrowserReadyState.Complete)
-//        {
-//            web.Document.
-//        }
-//    });
-//    Application.Run(f1);
-//}
-//);
-
-//th.SetApartmentState(ApartmentState.STA);
-//th.IsBackground = true;
-//th.Start();
-
-//Console.ReadLine();
-
-//th.Interrupt();
-
-//Create a ThreadRunner object
-ThreadRunner threadRunner = new ThreadRunner();
-
-//Create a WebView through the ThreadRunner
-WebView webView = threadRunner.CreateWebView();
-
-threadRunner.Send(() =>
+var edge = new EdgeDriver();
+try
 {
-    //Load Google's home page
-    webView.LoadUrlAndWait("https://fanyi.youdao.com");
+    edge.Url = "https://fanyi.youdao.com/index.html";
+    var input = edge.FindElement(By.Id("js_fanyi_input"));
+    input.SendKeys("你好");
 
-    // 对网页进行操作的测试
-    //object obj = webView.EvalScript("document.getElementsByName('btnI')[0].value");
-    //object obj2 = webView.EvalScript("document.getElementsByName('btnI')[0].Click");
+    Thread.Sleep(1000);
 
-    /*
+    var output = edge.FindElement(By.Id("js_fanyi_output"));
 
-    webView.EvalScript("document.getElementById('js_fanyi_input').innerText = 'Hello World';");
-
-    var doc = webView.GetDOMWindow().document;
-    var input = doc.getElementById("js_fanyi_input");
-    var text = input.innerText;
-    //input.InvokeFunction("input");
-
-    var bstr = "transBtn";
-    var transButton = doc.getElementsByTagName("a"); //.First(x=>x.className.Contains(bstr));
-
-    foreach(var a in transButton)
-    {
-        Console.WriteLine("\n" + a.outerHTML + "\n");
-    }
-    //Console.WriteLine(transButton.outerHTML);
-
-    Console.WriteLine(text);
-    //button.InvokeFunction("click");
-    //Capture screens-hot and save it to a file
-
-    */
-
-    webView.Capture().Save("WebScreenShot.png");
-});
+    string str = output.Text;
+    Console.WriteLine(str);
+}
+finally
+{
+    edge.Quit();
+}
