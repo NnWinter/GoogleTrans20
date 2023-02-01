@@ -1,37 +1,72 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.IO;
-using System.Text;
+﻿using EO.WebBrowser;
 
-HttpClient httpClient = new HttpClient();
+//Thread th = new Thread(
+//() => {
+//    Form f1 = new Form();
+//    WebBrowser web = new WebBrowser();
+//    web.ScriptErrorsSuppressed = true;
+//    f1.SetBounds(0, 0, 500, 500);
+//    f1.Controls.Add(web);
+//    web.Size = f1.ClientSize;
+//    web.Navigate("http://www.google.com");
+//    web.Refresh();
+//    web.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler((sender, e) =>
+//    {
+//        if (web.ReadyState == WebBrowserReadyState.Complete)
+//        {
+//            web.Document.
+//        }
+//    });
+//    Application.Run(f1);
+//}
+//);
 
-var url = "http://fanyi.youdao.com/translate";
+//th.SetApartmentState(ApartmentState.STA);
+//th.IsBackground = true;
+//th.Start();
 
-var text = "text";
+//Console.ReadLine();
 
-var data = new Dictionary<string, string>{
-        { "i", text },
-        {"from", "AUTO"},
-        {"to", "AUTO"},
-        {"smartresult", "dict"},
-        {"client", "fanyideskweb"},
-        {"salt", "16081210430989"},
-        {"doctype", "json"},
-        {"version", "2.1"},
-        {"keyfrom", "fanyi.web"},
-        {"action", "FY_BY_CLICKBUTTION"}
-    };
+//th.Interrupt();
 
-var jsonDic = JsonConvert.SerializeObject(data);
+//Create a ThreadRunner object
+ThreadRunner threadRunner = new ThreadRunner();
 
-var httpcontent = new StringContent(jsonDic, Encoding.UTF8, "application/json");
+//Create a WebView through the ThreadRunner
+WebView webView = threadRunner.CreateWebView();
 
-var response = await httpClient.PostAsync(url, httpcontent);
+threadRunner.Send(() =>
+{
+    //Load Google's home page
+    webView.LoadUrlAndWait("https://fanyi.youdao.com");
 
-var content = response.Content;
+    // 对网页进行操作的测试
+    //object obj = webView.EvalScript("document.getElementsByName('btnI')[0].value");
+    //object obj2 = webView.EvalScript("document.getElementsByName('btnI')[0].Click");
 
-var bytes = await content.ReadAsByteArrayAsync();
+    /*
 
-var result = Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+    webView.EvalScript("document.getElementById('js_fanyi_input').innerText = 'Hello World';");
 
-Console.WriteLine(result);
+    var doc = webView.GetDOMWindow().document;
+    var input = doc.getElementById("js_fanyi_input");
+    var text = input.innerText;
+    //input.InvokeFunction("input");
+
+    var bstr = "transBtn";
+    var transButton = doc.getElementsByTagName("a"); //.First(x=>x.className.Contains(bstr));
+
+    foreach(var a in transButton)
+    {
+        Console.WriteLine("\n" + a.outerHTML + "\n");
+    }
+    //Console.WriteLine(transButton.outerHTML);
+
+    Console.WriteLine(text);
+    //button.InvokeFunction("click");
+    //Capture screens-hot and save it to a file
+
+    */
+
+    webView.Capture().Save("WebScreenShot.png");
+});
