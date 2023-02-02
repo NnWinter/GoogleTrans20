@@ -20,10 +20,10 @@ namespace Net6.APIs.GoogleApi
         public override ApiOption ApiOption { get; init; }
         public GoogleAPI()
         {
-            DirectoryPath = @$"APIs\{Name}";
+            DirectoryPath = Path.Combine("APIs", Name);
             ApiOption = new GoogleApiOption(this);
 
-            var lanTemp = Language.ReadLanguagesFromFile(DirectoryPath + @"\Languages.txt");
+            var lanTemp = Language.ReadLanguagesFromFile(Path.Combine(DirectoryPath,"Languages.txt"));
             if (lanTemp == null)
             {
                 Tools.ShowError($"加载 {Name} 的语言列表时发生了 \"语言列表为 null\" 的致命错误[2301291205]", true);

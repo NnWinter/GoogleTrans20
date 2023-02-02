@@ -1,8 +1,6 @@
 ﻿using Net6;
 using Net6.APIs.GoogleApi;
 using Net6.APIs.YoudaoApi;
-using System.Diagnostics;
-using System.Text;
 
 GlobalOptions.Load();           // 一定要预加载全剧设定
 ConsoleColors.ResetDefault();   // 多次重复运行调试器可能会导致颜色不还原
