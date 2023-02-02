@@ -53,5 +53,5 @@ APIs/<API名>/Language.txt 是 API 官方给出的可用语言列表<br/>
 
 ---- 特别鸣谢 ----
 
-感谢 @baguotao233 和 @rdp-studio 提出的建议
+感谢 [@baguotao233](https://github.com/baguotao233) 和 [@rdp-studio](https://github.com/rdp-studio) 提出的建议
 所以才做了这个2.0版本
