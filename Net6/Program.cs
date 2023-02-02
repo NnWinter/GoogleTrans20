@@ -85,7 +85,7 @@ while (mainLoop)
                 if (input == null) { Tools.ShowError("输入的内容为 Null [2301302224]", false); stage = Stage.API_MENU; continue; }
 
                 Console.WriteLine("\n---- 翻译信息 ----\n");
-                var result = api.TranslateByConfig(input);
+                var result = api.TranslateByConfig(input); Console.WriteLine();
 
                 Console.WriteLine("\n---- 翻译结果 ----\n");
                 Console.WriteLine(result);

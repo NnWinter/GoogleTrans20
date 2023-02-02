@@ -10,6 +10,13 @@ var browser = await Puppeteer.LaunchAsync(new LaunchOptions
 var page = await browser.NewPageAsync();
 await page.GoToAsync("https://fanyi.youdao.com/index.html");
 
+// 先要点击选择语言，让语言变为2个
+
+
+
+
+/*
+
 var inpu = "div[id='js_fanyi_input']";
 
 // 尝试清除内容并重写
@@ -38,7 +45,10 @@ Thread.Sleep(100);
 page.TypeAsync(inpu, text2).Wait();
 
 Thread.Sleep(2000);
-content = await page.GetContentAsync();
+
+*/
+
+var content = await page.GetContentAsync();
 Console.WriteLine(content);
 
 Console.ReadLine();

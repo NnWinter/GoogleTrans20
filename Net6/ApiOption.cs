@@ -147,7 +147,7 @@ namespace Net6
         /// <param name="start">起始语言</param>
         /// <param name="list">中间语言</param>
         /// <param name="end">结束语言</param>
-        protected static void PrintLanListOptionStr(string start, List<string> list, string end, Dictionary<string, string> languages)
+        protected static void PrintLanListOptionStr(string start, List<string> list, string end, Dictionary<string, string?> languages)
         {
             Console.Write($"\n起始语言 = "); Language.Print(start, languages);
             Console.Write($"\n中间语言 = ");
